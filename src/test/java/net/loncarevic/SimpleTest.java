@@ -6,6 +6,7 @@ import java.time.Duration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -101,8 +102,8 @@ public class SimpleTest {
         String campaignTitle = driver.getTitle();
         Assert.assertNotNull(campaignTitle, "Campaign page title is null.");
         Assert.assertTrue(
-                campaignTitle.contains("Campaigns | MailerLite"),
-                "Unexpected Campaign page title: " + campaignTitle);
+            campaignTitle.contains("Campaigns | MailerLite"),
+            "Unexpected Campaign page title: " + campaignTitle);
 
         // Click on "Create Campaign" (selector is a placeholder; update as needed)
         WebElement createCampaignButton =
@@ -118,30 +119,41 @@ public class SimpleTest {
                     By.xpath("//h3[text()='Regular campaign']/ancestor::button")));
         regularCampaignOption.click();
 
-        // Fill in the necessary fields
-        WebElement campaignNameField =
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='campaign-name-input']")));
+        // Fill in the Campaign name
+        WebElement campaignNameParent =
+            driver.findElement(By.cssSelector("[data-test-id='campaign-name-input']"));
+        campaignNameParent.click();
+        WebElement campaignNameField = campaignNameParent.findElement(By.tagName("input"));
         campaignNameField.sendKeys("Automated Campaign");
-        WebElement subjectField =
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='subject-input']")));
+
+        // Fill in the Campaign subject
+        WebElement subjectParent =
+            driver.findElement(By.cssSelector("[data-test-id='subject-input']"));
+        subjectParent.click();
+        WebElement subjectField = subjectParent.findElement(By.tagName("input"));
         subjectField.sendKeys("Test Campaign Subject");
 
         // Select the group of subscribers
         WebElement recipientsButton =
-                wait.until(
-                        ExpectedConditions.elementToBeClickable(
-                                By.cssSelector("[data-test-id='create-campaign-next-button']")));
-                recipientsButton.click();
-
-        // Click Continue
-        WebElement nextButton =
             wait.until(
                 ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("[data-test-id='create-campaign-next-button']")));
-        nextButton.click();
+                    By.cssSelector("[data-test-id='recipients-selection-box']")));
+
+        // Open recipients
+        Actions actions = new Actions(driver);
+        actions.sendKeys(Keys.PAGE_DOWN).perform();
+        actions.moveToElement(recipientsButton).perform();
+        recipientsButton.click();
+
+        // Click Continue
+        //        WebElement nextButton =
+        //            wait.until(
+        //                ExpectedConditions.elementToBeClickable(
+        //                    By.cssSelector("[data-test-id='create-campaign-next-button']")));
+        //        nextButton.click();
 
       } finally {
-//        driver.quit();
+        //                driver.quit();
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -157,12 +169,7 @@ public class SimpleTest {
 
     // Add the session cookie
     Cookie sessionCookie =
-        new Cookie(
-            "mailerlite_session",
-            cookieValue,
-            ".mailerlite.com",
-            "/",
-            null);
+        new Cookie("mailerlite_session", cookieValue, ".mailerlite.com", "/", null);
     driver.manage().addCookie(sessionCookie);
 
     // Verify if the cookie is still valid
