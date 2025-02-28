@@ -34,12 +34,14 @@ public class SimpleTest {
         // Open login page
         driver.get("https://dashboard.mailerlite.com");
         String loginTitle = driver.getTitle();
-        Assert.assertNotNull(loginTitle);
-        Assert.assertTrue(loginTitle.contains("Login | MailerLite"));
+        Assert.assertNotNull(loginTitle, "Login page title is null.");
+        Assert.assertTrue(
+            loginTitle.contains("Login | MailerLite"),
+            "Unexpected login page title: " + loginTitle);
 
         // Assert login page UI elements
         String loginPage = driver.getPageSource();
-        Assert.assertNotNull(loginPage);
+        Assert.assertNotNull(loginPage, "Login page source is null.");
         Assert.assertTrue(loginPage.contains("Welcome back"), "Welcome back text is missing");
         Assert.assertTrue(
             loginPage.contains("Don’t have an account?"), "Don't have an account text is missing");
@@ -82,9 +84,11 @@ public class SimpleTest {
             ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//h1[contains(text(), 'Dashboard')]")));
 
-        // Verify successful login by checking the page title or dashboard-specific elements
+        // Verify successful login by checking the Dashboard title
+        String dashboardTitle = driver.getTitle();
+        Assert.assertNotNull(dashboardTitle, "Dashboard page title is null.");
         Assert.assertTrue(
-            driver.getTitle().contains("Dashboard"), "Dashboard page did not load after login.");
+            dashboardTitle.contains("Dashboard"), "Unexpected dashboard title: " + dashboardTitle);
 
       } finally {
         driver.quit();
@@ -103,12 +107,19 @@ public class SimpleTest {
 
     // Add the session cookie
     Cookie sessionCookie =
-        new Cookie("mailerlite_session", cookieValue, ".mailerlite.com", "/", null);
+        new Cookie(
+            "mailerlite_session",
+            cookieValue,
+            ".mailerlite.com",
+            "/",
+            null);
     driver.manage().addCookie(sessionCookie);
 
     // Verify if the cookie is still valid
     driver.get("https://dashboard.mailerlite.com/");
-    if (driver.getTitle().contains("Login | MailerLite")) {
+    String pageTitle = driver.getTitle();
+    Assert.assertNotNull(pageTitle, "Page title is null after injecting session cookie.");
+    if (pageTitle.contains("Login | MailerLite")) {
       System.out.println("Session expired! You need to log in and update the cookie.");
     } else {
       System.out.println("Session is valid.");
