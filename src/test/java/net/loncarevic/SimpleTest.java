@@ -190,7 +190,7 @@ public class SimpleTest {
         // Wait until "Done editing" text is visible inside the button
         wait.until(ExpectedConditions.textToBePresentInElement(doneEditingButton, "Done editing"));
 
-        // Wait until the button is NOT disabled
+        // Wait until the button is not disabled
         wait.until(
             ExpectedConditions.not(
                 ExpectedConditions.attributeToBe(doneEditingButton, "disabled", "true")));
@@ -201,7 +201,7 @@ public class SimpleTest {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", doneEditingButton);
 
       } finally {
-                        driver.quit();
+        driver.quit();
       }
     } catch (Exception e) {
       e.printStackTrace();
