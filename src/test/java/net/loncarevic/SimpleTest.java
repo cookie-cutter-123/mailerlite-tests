@@ -60,9 +60,12 @@ public class SimpleTest {
     }
 
     private void injectSessionIntoSelenium(WebDriver driver) {
-        Cookie sessionCookie = new Cookie("mailerlite_session",
-                "eyJpdiI6Ijc4b1YrK3B5RDZlazcwTnp4alNaRkE9PSIsInZhbHVlIjoibFNzam1sRWJPaGJaRHphWlhxSERsTWUycE9zcjlWM3JuazB2bzJvU3ZWYUJvbDNUdlhYcHplM2JNenRsMG9Qc2dkaFJBUng5U3Y5RVBXY3ZJRGlhQm0xenh4dDdsSURhUHprZWJWMWx4dGVZTGxWbnZHSFc0RytrUkpvTGQ3TkkiLCJtYWMiOiJkOWQyYzU5ZmU0OGU3YThmYmViNjY5ODQ2ZjE0ZmJlNTNkMTVkNjM2MmU2N2M5NzUzMzg0ZjBkNDFhODZiYTU5IiwidGFnIjoiIn0%3D",
-                ".mailerlite.com", "/", null);
+        // Read the session cookie from an environment variable
+        String cookieValue = System.getenv("MAILERLITE_COOKIE");
+        if (cookieValue == null) {
+            throw new RuntimeException("MAILERLITE_COOKIE environment variable not set");
+        }
+        Cookie sessionCookie = new Cookie("mailerlite_session", cookieValue, ".mailerlite.com", "/", null);
         driver.manage().addCookie(sessionCookie);
     }
 
