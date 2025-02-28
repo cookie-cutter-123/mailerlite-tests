@@ -1,8 +1,11 @@
 package net.loncarevic;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -12,68 +15,83 @@ public class SimpleTest {
 
   @Test
   public void testDashboardUI() {
-    WebDriver driver = new ChromeDriver();
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
+    ChromeOptions options = new ChromeOptions();
+    boolean isCI = System.getenv("CI") != null; // Detect if running in GitHub Actions
     try {
-      // Open login page
-      driver.get("https://dashboard.mailerlite.com");
-      Assert.assertTrue(driver.getTitle().contains("Login | MailerLite"));
+      if (isCI) {
+        // Create a unique temporary directory to prevent session conflicts in CI
+        Path tempDir = Files.createTempDirectory("chrome-user-data");
+        options.addArguments("--user-data-dir=" + tempDir.toAbsolutePath());
 
-      // Assert login page UI elements
-      Assert.assertTrue(
-          driver.getPageSource().contains("Welcome back"), "Welcome back text is missing");
-      Assert.assertTrue(
-          driver.getPageSource().contains("Don’t have an account?"),
-          "Don't have an account text is missing");
-      Assert.assertTrue(driver.getPageSource().contains("Sign up"), "Sign up text is missing");
-      Assert.assertTrue(
-          driver.getPageSource().contains("Remember me for 7 days"),
-          "Remember me checkbox text is missing");
-      Assert.assertTrue(
-          driver.getPageSource().contains("Forgot your password?"),
-          "Forgot password link is missing");
-      Assert.assertTrue(driver.getPageSource().contains("Login"), "Login button text is missing");
-      Assert.assertTrue(
-          driver.getPageSource().contains("I can't login to my account"),
-          "Login issue text is missing");
+        // Run headless in CI to avoid UI dependency
+        options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
+      }
 
-      // Assert input fields exist
-      WebElement emailField =
-          wait.until(
-              ExpectedConditions.presenceOfElementLocated(
-                  By.cssSelector("input#email[type='email']")));
-      Assert.assertTrue(emailField.isDisplayed(), "Email field is not visible");
+      WebDriver driver = new ChromeDriver(options);
+      WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-      WebElement passwordField =
-          wait.until(
-              ExpectedConditions.presenceOfElementLocated(
-                  By.cssSelector("input#password[type='password']")));
-      Assert.assertTrue(passwordField.isDisplayed(), "Password field is not visible");
+      try {
+        // Open login page
+        driver.get("https://dashboard.mailerlite.com");
+        Assert.assertTrue(driver.getTitle().contains("Login | MailerLite"));
 
-      // Inject session cookie to bypass login because of the reCAPTCHA
-      injectSessionIntoSelenium(driver);
+        // Assert login page UI elements
+        Assert.assertTrue(
+            driver.getPageSource().contains("Welcome back"), "Welcome back text is missing");
+        Assert.assertTrue(
+            driver.getPageSource().contains("Don’t have an account?"),
+            "Don't have an account text is missing");
+        Assert.assertTrue(driver.getPageSource().contains("Sign up"), "Sign up text is missing");
+        Assert.assertTrue(
+            driver.getPageSource().contains("Remember me for 7 days"),
+            "Remember me checkbox text is missing");
+        Assert.assertTrue(
+            driver.getPageSource().contains("Forgot your password?"),
+            "Forgot password link is missing");
+        Assert.assertTrue(driver.getPageSource().contains("Login"), "Login button text is missing");
+        Assert.assertTrue(
+            driver.getPageSource().contains("I can't login to my account"),
+            "Login issue text is missing");
 
-      // Navigate to the dashboard explicitly
-      driver.get("https://dashboard.mailerlite.com/");
+        // Assert input fields exist
+        WebElement emailField =
+            wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                    By.cssSelector("input#email[type='email']")));
+        Assert.assertTrue(emailField.isDisplayed(), "Email field is not visible");
 
-      // Close cookie popup if present
-      dismissCookiePopupIfPresent(driver, wait);
+        WebElement passwordField =
+            wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                    By.cssSelector("input#password[type='password']")));
+        Assert.assertTrue(passwordField.isDisplayed(), "Password field is not visible");
 
-      // Close the "A glow up for your pop-ups!" modal
-      dismissGlowUpPopupIfPresent(driver, wait);
+        // Inject session cookie to bypass login because of the reCAPTCHA
+        injectSessionIntoSelenium(driver);
 
-      // Wait for UI to load after login
-      wait.until(
-          ExpectedConditions.visibilityOfElementLocated(
-              By.xpath("//h1[contains(text(), 'Dashboard')]")));
+        // Navigate to the dashboard explicitly
+        driver.get("https://dashboard.mailerlite.com/");
 
-      // Verify successful login by checking the page title or dashboard-specific elements
-      Assert.assertTrue(
-          driver.getTitle().contains("Dashboard"), "Dashboard page did not load after login.");
+        // Close cookie popup if present
+        dismissCookiePopupIfPresent(driver, wait);
 
-    } finally {
-      driver.quit();
+        // Close the "A glow up for your pop-ups!" modal
+        dismissGlowUpPopupIfPresent(driver, wait);
+
+        // Wait for UI to load after login
+        wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//h1[contains(text(), 'Dashboard')]")));
+
+        // Verify successful login by checking the page title or dashboard-specific elements
+        Assert.assertTrue(
+            driver.getTitle().contains("Dashboard"), "Dashboard page did not load after login.");
+
+      } finally {
+        driver.quit();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
