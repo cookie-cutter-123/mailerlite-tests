@@ -90,8 +90,58 @@ public class SimpleTest {
         Assert.assertTrue(
             dashboardTitle.contains("Dashboard"), "Unexpected dashboard title: " + dashboardTitle);
 
+        // Click on the "Campaigns" link
+        WebElement campaignsLink =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.xpath(
+                        "//a[contains(@href, '/campaigns/status') and .//span[text()='Campaigns']]")));
+        campaignsLink.click();
+
+        String campaignTitle = driver.getTitle();
+        Assert.assertNotNull(campaignTitle, "Campaign page title is null.");
+        Assert.assertTrue(
+                campaignTitle.contains("Campaigns | MailerLite"),
+                "Unexpected Campaign page title: " + campaignTitle);
+
+        // Click on "Create Campaign" (selector is a placeholder; update as needed)
+        WebElement createCampaignButton =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("[data-test-id='create-campaign-button']")));
+        createCampaignButton.click();
+
+        // Select "Regular Campaign"
+        WebElement regularCampaignOption =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.xpath("//h3[text()='Regular campaign']/ancestor::button")));
+        regularCampaignOption.click();
+
+        // Fill in the necessary fields
+        WebElement campaignNameField =
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='campaign-name-input']")));
+        campaignNameField.sendKeys("Automated Campaign");
+        WebElement subjectField =
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[data-test-id='subject-input']")));
+        subjectField.sendKeys("Test Campaign Subject");
+
+        // Select the group of subscribers
+        WebElement recipientsButton =
+                wait.until(
+                        ExpectedConditions.elementToBeClickable(
+                                By.cssSelector("[data-test-id='create-campaign-next-button']")));
+                recipientsButton.click();
+
+        // Click Continue
+        WebElement nextButton =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("[data-test-id='create-campaign-next-button']")));
+        nextButton.click();
+
       } finally {
-        driver.quit();
+//        driver.quit();
       }
     } catch (Exception e) {
       e.printStackTrace();
