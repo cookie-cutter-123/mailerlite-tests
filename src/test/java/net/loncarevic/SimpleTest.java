@@ -33,25 +33,24 @@ public class SimpleTest {
       try {
         // Open login page
         driver.get("https://dashboard.mailerlite.com");
-        Assert.assertTrue(driver.getTitle().contains("Login | MailerLite"));
+        String loginTitle = driver.getTitle();
+        Assert.assertNotNull(loginTitle);
+        Assert.assertTrue(loginTitle.contains("Login | MailerLite"));
 
         // Assert login page UI elements
+        String loginPage = driver.getPageSource();
+        Assert.assertNotNull(loginPage);
+        Assert.assertTrue(loginPage.contains("Welcome back"), "Welcome back text is missing");
         Assert.assertTrue(
-            driver.getPageSource().contains("Welcome back"), "Welcome back text is missing");
+            loginPage.contains("Don’t have an account?"), "Don't have an account text is missing");
+        Assert.assertTrue(loginPage.contains("Sign up"), "Sign up text is missing");
         Assert.assertTrue(
-            driver.getPageSource().contains("Don’t have an account?"),
-            "Don't have an account text is missing");
-        Assert.assertTrue(driver.getPageSource().contains("Sign up"), "Sign up text is missing");
+            loginPage.contains("Remember me for 7 days"), "Remember me checkbox text is missing");
         Assert.assertTrue(
-            driver.getPageSource().contains("Remember me for 7 days"),
-            "Remember me checkbox text is missing");
+            loginPage.contains("Forgot your password?"), "Forgot password link is missing");
+        Assert.assertTrue(loginPage.contains("Login"), "Login button text is missing");
         Assert.assertTrue(
-            driver.getPageSource().contains("Forgot your password?"),
-            "Forgot password link is missing");
-        Assert.assertTrue(driver.getPageSource().contains("Login"), "Login button text is missing");
-        Assert.assertTrue(
-            driver.getPageSource().contains("I can't login to my account"),
-            "Login issue text is missing");
+            loginPage.contains("I can't login to my account"), "Login issue text is missing");
 
         // Assert input fields exist
         WebElement emailField =
@@ -101,9 +100,19 @@ public class SimpleTest {
     if (cookieValue == null) {
       throw new RuntimeException("MAILERLITE_COOKIE environment variable not set");
     }
+
+    // Add the session cookie
     Cookie sessionCookie =
         new Cookie("mailerlite_session", cookieValue, ".mailerlite.com", "/", null);
     driver.manage().addCookie(sessionCookie);
+
+    // Verify if the cookie is still valid
+    driver.get("https://dashboard.mailerlite.com/");
+    if (driver.getTitle().contains("Login | MailerLite")) {
+      System.out.println("Session expired! You need to log in and update the cookie.");
+    } else {
+      System.out.println("Session is valid.");
+    }
   }
 
   private void dismissCookiePopupIfPresent(WebDriver driver, WebDriverWait wait) {
