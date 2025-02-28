@@ -45,9 +45,6 @@ public class SimpleTest {
             // Close cookie popup if present
             dismissCookiePopupIfPresent(driver, wait);
 
-            // Close the dashboard pop-up if present
-            dismissDashboardPopupIfPresent(driver, wait);
-
             // Close the "A glow up for your pop-ups!" modal
             dismissGlowUpPopupIfPresent(driver, wait);
 
@@ -79,23 +76,24 @@ public class SimpleTest {
         }
     }
 
-    private void dismissDashboardPopupIfPresent(WebDriver driver, WebDriverWait wait) {
-        try {
-            WebElement popupCloseButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(@aria-label, 'Close')]")));
-            popupCloseButton.click();
-            wait.until(ExpectedConditions.invisibilityOf(popupCloseButton));
-        } catch (TimeoutException e) {
-            System.out.println("No dashboard popup found, continuing...");
-        }
-    }
-
     private void dismissGlowUpPopupIfPresent(WebDriver driver, WebDriverWait wait) {
         try {
-            WebElement noThanksButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[span[text()='No thanks']]")));
+            // Wait for the modal that contains the pop-up text
+            WebElement popupModal = wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.xpath("//h2[contains(text(), 'A glow up for your pop-ups!')]")
+            ));
+
+            // Find and click the "No thanks" button
+            WebElement noThanksButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[contains(., 'No thanks')]")
+            ));
             noThanksButton.click();
-            wait.until(ExpectedConditions.invisibilityOf(noThanksButton));
+
+            // Wait for the modal to disappear
+            wait.until(ExpectedConditions.invisibilityOf(popupModal));
+
         } catch (TimeoutException e) {
-            System.out.println("No glow-up popup found, continuing...");
+            System.out.println("No 'glow-up' popup found, continuing...");
         }
     }
 }
