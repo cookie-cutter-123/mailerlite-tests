@@ -74,10 +74,10 @@ public class SimpleTest {
         driver.get("https://dashboard.mailerlite.com/");
 
         // Close cookie popup if present
-        dismissCookiePopupIfPresent(driver, wait);
+        dismissCookiePopupIfPresent(wait);
 
         // Close the "A glow up for your pop-ups!" modal
-        dismissGlowUpPopupIfPresent(driver, wait);
+        dismissGlowUpPopupIfPresent(wait);
 
         // Wait for UI to load after login
         wait.until(
@@ -126,7 +126,7 @@ public class SimpleTest {
     }
   }
 
-  private void dismissCookiePopupIfPresent(WebDriver driver, WebDriverWait wait) {
+  private void dismissCookiePopupIfPresent(WebDriverWait wait) {
     try {
       WebElement rejectAllButton =
           wait.until(
@@ -139,7 +139,7 @@ public class SimpleTest {
     }
   }
 
-  private void dismissGlowUpPopupIfPresent(WebDriver driver, WebDriverWait wait) {
+  private void dismissGlowUpPopupIfPresent(WebDriverWait wait) {
     try {
       // Wait for the modal that contains the pop-up text
       WebElement popupModal =
