@@ -17,11 +17,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: maven
 
-      - name: Install ChromeDriver
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromedriver
+      - name: Set up Chrome and ChromeDriver
+        uses: browser-actions/setup-chrome@v1
 
       - name: Run Maven tests
         run: mvn clean test
