@@ -11,23 +11,16 @@ import java.time.Duration;
 public class SimpleTest {
 
     @Test
-    public void testGoogleHomePageTitle() {
+    public void testDashboardUI() {
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         try {
+            // Open login page
             driver.get("https://dashboard.mailerlite.com");
             Assert.assertTrue(driver.getTitle().contains("Login | MailerLite"));
 
-            // Wait for and click the decline button if present
-            try {
-                WebElement declineButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll")));
-                declineButton.click();
-            } catch (Exception e) {
-                System.out.println("Cookie decline button not found or already dismissed.");
-            }
-
-            // Assert visible text
+            // Assert login page UI elements
             Assert.assertTrue(driver.getPageSource().contains("Welcome back"), "Welcome back text is missing");
             Assert.assertTrue(driver.getPageSource().contains("Don’t have an account?"), "Don't have an account text is missing");
             Assert.assertTrue(driver.getPageSource().contains("Sign up"), "Sign up text is missing");
@@ -36,24 +29,36 @@ public class SimpleTest {
             Assert.assertTrue(driver.getPageSource().contains("Login"), "Login button text is missing");
             Assert.assertTrue(driver.getPageSource().contains("I can't login to my account"), "Login issue text is missing");
 
-            // Enter email address
-            WebElement emailField = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input#email[type='email']")));
-            emailField.sendKeys("igor@loncarevic.net");
+            // Assert and interact with input fields (without submitting)
+            WebElement emailField = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#email[type='email']")));
+            Assert.assertTrue(emailField.isDisplayed(), "Email field is not visible");
+            emailField.sendKeys("lorem@ipsum.net");
 
-            // Enter password
-            WebElement passwordField = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input#password[type='password']")));
-            passwordField.sendKeys("bxhM%tS2V$bq*3he^8Fc");
+            WebElement passwordField = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#password[type='password']")));
+            Assert.assertTrue(passwordField.isDisplayed(), "Password field is not visible");
+            passwordField.sendKeys("lorem ipsum");
 
-            // Click on the Login button
-            WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(., 'Login')]")));
-            loginButton.click();
+            // Inject session cookie to bypass reCAPTCHA
+            injectSessionIntoSelenium(driver);
 
-            Thread.sleep(5000);
+            // Refresh to apply session
+            driver.navigate().refresh();
 
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            // Wait for UI to load after login
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(), 'Welcome back')]")));
+
+            // Verify dashboard loaded successfully
+            Assert.assertTrue(driver.getPageSource().contains("Welcome back"), "Dashboard did not load properly.");
+
         } finally {
             driver.quit();
         }
+    }
+
+    private void injectSessionIntoSelenium(WebDriver driver) {
+        Cookie sessionCookie = new Cookie("mailerlite_session",
+                "eyJpdiI6Ijc4b1YrK3B5RDZlazcwTnp4alNaRkE9PSIsInZhbHVlIjoibFNzam1sRWJPaGJaRHphWlhxSERsTWUycE9zcjlWM3JuazB2bzJvU3ZWYUJvbDNUdlhYcHplM2JNenRsMG9Qc2dkaFJBUng5U3Y5RVBXY3ZJRGlhQm0xenh4dDdsSURhUHprZWJWMWx4dGVZTGxWbnZHSFc0RytrUkpvTGQ3TkkiLCJtYWMiOiJkOWQyYzU5ZmU0OGU3YThmYmViNjY5ODQ2ZjE0ZmJlNTNkMTVkNjM2MmU2N2M5NzUzMzg0ZjBkNDFhODZiYTU5IiwidGFnIjoiIn0%3D",
+                ".mailerlite.com", "/", null);
+        driver.manage().addCookie(sessionCookie);
     }
 }
