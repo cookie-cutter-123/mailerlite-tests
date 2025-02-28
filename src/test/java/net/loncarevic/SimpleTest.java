@@ -29,7 +29,7 @@ public class SimpleTest {
       }
 
       WebDriver driver = new ChromeDriver(options);
-      WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+      WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
       try {
         // Open login page
@@ -145,15 +145,63 @@ public class SimpleTest {
         actions.moveToElement(recipientsButton).perform();
         recipientsButton.click();
 
+        // Tick a subscribers group
+        WebElement checkbox =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector(
+                        "[data-test-id='subscriber-group-row'] input[type='checkbox']")));
+        checkbox.click();
+
+        // Save recipients
+        WebElement saveRecipientsButton =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("[data-test-id='save-recipients-button']")));
+        saveRecipientsButton.click();
+
         // Click Continue
-        //        WebElement nextButton =
-        //            wait.until(
-        //                ExpectedConditions.elementToBeClickable(
-        //                    By.cssSelector("[data-test-id='create-campaign-next-button']")));
-        //        nextButton.click();
+        WebElement nextButton =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("[data-test-id='create-campaign-next-button']")));
+        nextButton.click();
+
+        // Click on the Start from scratch tab
+        WebElement startFromScratchTab =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("[data-test-id='start-from-scratch-tab']")));
+        startFromScratchTab.click();
+
+        // Click on Drag & drop editor
+        WebElement dragAndDropEditor =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("[data-test-id='drag-drop-editor']")));
+        dragAndDropEditor.click();
+
+        // Locate the green button
+        WebElement doneEditingButton =
+            wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                    By.xpath("//button[contains(@class, 'btn-green')]")));
+
+        // Wait until "Done editing" text is visible inside the button
+        wait.until(ExpectedConditions.textToBePresentInElement(doneEditingButton, "Done editing"));
+
+        // Wait until the button is NOT disabled
+        wait.until(
+            ExpectedConditions.not(
+                ExpectedConditions.attributeToBe(doneEditingButton, "disabled", "true")));
+
+        // Ensure the button is visible and clickable
+        ((JavascriptExecutor) driver)
+            .executeScript("arguments[0].scrollIntoView({block: 'center'});", doneEditingButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", doneEditingButton);
 
       } finally {
-        //                driver.quit();
+                        driver.quit();
       }
     } catch (Exception e) {
       e.printStackTrace();
