@@ -4,9 +4,9 @@ import static net.loncarevic.utils.Constants.*;
 import static net.loncarevic.utils.CookieUtils.injectSessionIntoSelenium;
 
 import net.loncarevic.base.BaseTest;
-import net.loncarevic.pageobjects.CampaignsPage;
-import net.loncarevic.pageobjects.DashboardPage;
-import net.loncarevic.pageobjects.LoginPage;
+import net.loncarevic.pages.CampaignsPage;
+import net.loncarevic.pages.DashboardPage;
+import net.loncarevic.pages.LoginPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;

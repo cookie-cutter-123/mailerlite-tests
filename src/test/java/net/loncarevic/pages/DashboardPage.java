@@ -1,4 +1,4 @@
-package net.loncarevic.pageobjects;
+package net.loncarevic.pages;
 
 import static net.loncarevic.utils.Constants.*;
 import static net.loncarevic.utils.PopUpUtils.dismissCookiePopupIfPresent;
