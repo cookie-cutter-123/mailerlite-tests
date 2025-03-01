@@ -82,7 +82,7 @@ public class TestCase0001 {
 
         wait.until(
             ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//h1[contains(text(), '" + TEXT_DASHBOARD + "')]"))); // TODO
+                By.xpath(XPATH_H1_DASHBOARD)));
 
         // Verify successful login by checking the Dashboard title
         String dashboardTitle = driver.getTitle();
@@ -101,7 +101,7 @@ public class TestCase0001 {
         Assert.assertTrue(
             campaignTitle.contains(TITLE_CAMPAIGNS), MSG_UNEXPECTED_CAMPAIGN_TITLE + campaignTitle);
 
-        // Click on "Create Campaign" (selector is a placeholder; update as needed)
+        // Click on "Create Campaign"
         WebElement createCampaignButton =
             wait.until(
                 ExpectedConditions.elementToBeClickable(

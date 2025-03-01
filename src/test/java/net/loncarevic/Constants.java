@@ -42,7 +42,8 @@ public class Constants {
   public static final String XPATH_NO_THANKS_BUTTON = "//button[contains(., 'No thanks')]";
   public static final String TEXT_NO_GLOW_UP_POPUP = "No 'glow-up' popup found, continuing...";
   public static final String TEXT_DASHBOARD = "Dashboard";
-  public static final String MSG_DASHBOARD_TITLE_NULL = "Dashboard page title is null.";
+    public static final String XPATH_H1_DASHBOARD = "//h1[contains(text(), 'Dashboard')]";
+    public static final String MSG_DASHBOARD_TITLE_NULL = "Dashboard page title is null.";
   public static final String MSG_UNEXPECTED_DASHBOARD_TITLE = "Unexpected dashboard title: ";
   public static final String TITLE_CAMPAIGNS = "Campaigns | MailerLite";
   public static final String MSG_CAMPAIGN_PAGE_TITLE_NULL = "Campaign page title is null.";
