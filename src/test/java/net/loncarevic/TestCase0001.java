@@ -1,7 +1,9 @@
 package net.loncarevic;
 
-import static net.loncarevic.Constants.*;
+import static net.loncarevic.utils.Constants.*;
 import static net.loncarevic.utils.LocatorUtils.byDataTestId;
+import static net.loncarevic.utils.PopUpUtils.dismissCookiePopupIfPresent;
+import static net.loncarevic.utils.PopUpUtils.dismissGlowUpPopupIfPresent;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,7 +84,7 @@ public class TestCase0001 {
 
         wait.until(
             ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//h1[contains(text(), '" + TEXT_DASHBOARD + "')]"))); // TODO
+                By.xpath(XPATH_H1_DASHBOARD)));
 
         // Verify successful login by checking the Dashboard title
         String dashboardTitle = driver.getTitle();
@@ -101,7 +103,7 @@ public class TestCase0001 {
         Assert.assertTrue(
             campaignTitle.contains(TITLE_CAMPAIGNS), MSG_UNEXPECTED_CAMPAIGN_TITLE + campaignTitle);
 
-        // Click on "Create Campaign" (selector is a placeholder; update as needed)
+        // Click on "Create Campaign"
         WebElement createCampaignButton =
             wait.until(
                 ExpectedConditions.elementToBeClickable(
@@ -298,36 +300,6 @@ public class TestCase0001 {
       logger.warn(WARN_SESSION_EXPIRED);
     } else {
       logger.info(INFO_SESSION_VALID);
-    }
-  }
-
-  private void dismissCookiePopupIfPresent(WebDriverWait wait) {
-    try {
-      WebElement rejectAllButton =
-          wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_REJECT_ALL_BUTTON)));
-      rejectAllButton.click();
-      wait.until(ExpectedConditions.invisibilityOf(rejectAllButton));
-    } catch (TimeoutException e) {
-      logger.debug(TEXT_NO_COOKIE_POPUP);
-    }
-  }
-
-  private void dismissGlowUpPopupIfPresent(WebDriverWait wait) {
-    try {
-      // Wait for the modal that contains the pop-up text
-      WebElement popupModal =
-          wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(XPATH_GLOW_UP_POPUP)));
-
-      // Find and click the "No thanks" button
-      WebElement noThanksButton =
-          wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_NO_THANKS_BUTTON)));
-      noThanksButton.click();
-
-      // Wait for the modal to disappear
-      wait.until(ExpectedConditions.invisibilityOf(popupModal));
-
-    } catch (TimeoutException e) {
-      logger.debug(TEXT_NO_GLOW_UP_POPUP);
     }
   }
 }
