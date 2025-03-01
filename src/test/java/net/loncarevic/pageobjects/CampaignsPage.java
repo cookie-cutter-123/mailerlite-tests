@@ -18,8 +18,8 @@ public class CampaignsPage {
 
   private static final Logger logger = LoggerFactory.getLogger(CampaignsPage.class);
 
-  private WebDriver driver;
-  private WebDriverWait wait;
+  private final WebDriver driver;
+  private final WebDriverWait wait;
 
   public CampaignsPage(WebDriver driver, WebDriverWait wait) {
     this.driver = driver;
@@ -35,11 +35,12 @@ public class CampaignsPage {
   }
 
   /** Assert the Campaigns page title. */
-  public void assertCampaignsTitle() {
+  public CampaignsPage assertCampaignsTitle() {
     String campaignTitle = driver.getTitle();
     Assert.assertNotNull(campaignTitle, MSG_CAMPAIGN_PAGE_TITLE_NULL);
     Assert.assertTrue(
         campaignTitle.contains(TITLE_CAMPAIGNS), MSG_UNEXPECTED_CAMPAIGN_TITLE + campaignTitle);
+    return this;
   }
 
   /** Click on "Create Campaign" and select "Regular Campaign". */
@@ -157,8 +158,7 @@ public class CampaignsPage {
   }
 
   /** Asserts the final Review and schedule page content. */
-  public void assertReviewAndSchedulePage() {
-    // ### Assert the Review and schedule page ### // TODO
+  public CampaignsPage assertReviewAndScheduleSubPage() { // TODO split into more methods
     // Wait for the "Review and schedule" page to load
     wait.until(
         ExpectedConditions.visibilityOfElementLocated(
@@ -231,12 +231,14 @@ public class CampaignsPage {
                   By.cssSelector("[data-test-id='" + buttonId + "']")));
       Assert.assertTrue(button.isDisplayed(), MSG_BUTTON_PREFIX + buttonId + MSG_BUTTON_SUFFIX);
     }
+    return this;
   }
 
   /** Click the "Send" button. */
-  public void clickSendButton() {
+  public CampaignsPage clickSendButton() {
     WebElement sendButton =
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(CSS_BUTTON_SEND)));
-    // sendButton.click(); // TODO uncomment when ready
+    sendButton.click(); // TODO uncomment
+    return this;
   }
 }

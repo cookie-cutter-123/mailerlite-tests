@@ -37,7 +37,7 @@ public class DashboardPage {
   }
 
   /** Verify successful login by checking the Dashboard title. */
-  public void assertDashboardTitle() {
+  public DashboardPage assertDashboardTitle() {
     // Wait for h1
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPATH_H1_DASHBOARD)));
 
@@ -46,5 +46,6 @@ public class DashboardPage {
     Assert.assertNotNull(dashboardTitle, MSG_DASHBOARD_TITLE_NULL);
     Assert.assertTrue(
         dashboardTitle.contains(TEXT_DASHBOARD), MSG_UNEXPECTED_DASHBOARD_TITLE + dashboardTitle);
+    return this;
   }
 }

@@ -26,14 +26,15 @@ public class LoginPage {
   }
 
   /** Asserts the login page title. */
-  public void assertLoginTitle() {
+  public LoginPage assertLoginTitle() {
     String loginTitle = driver.getTitle();
     Assert.assertNotNull(loginTitle, MSG_LOGIN_TITLE_NULL);
     Assert.assertTrue(loginTitle.contains(TITLE_LOGIN), MSG_UNEXPECTED_LOGIN_TITLE + loginTitle);
+    return this;
   }
 
   /** Asserts the login page UI elements. */
-  public void assertLoginPageUiElements() {
+  public LoginPage assertLoginPageUiElements() {
     String loginPage = driver.getPageSource();
     Assert.assertNotNull(loginPage, MSG_LOGIN_PAGE_SOURCE_NULL);
     Assert.assertTrue(loginPage.contains(TEXT_WELCOME_BACK), MSG_WELCOME_BACK_MISSING);
@@ -43,10 +44,11 @@ public class LoginPage {
     Assert.assertTrue(loginPage.contains(TEXT_FORGOT_PASSWORD), MSG_FORGOT_PASSWORD_MISSING);
     Assert.assertTrue(loginPage.contains(TEXT_LOGIN_BUTTON), MSG_LOGIN_BUTTON_MISSING);
     Assert.assertTrue(loginPage.contains(TEXT_LOGIN_ISSUE), MSG_LOGIN_ISSUE_MISSING);
+    return this;
   }
 
   /** Asserts the presence of the email/password fields. */
-  public void assertInputFields() {
+  public LoginPage assertInputFields() {
     WebElement emailField =
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(CSS_EMAIL_FIELD)));
     Assert.assertTrue(emailField.isDisplayed(), MSG_EMAIL_FIELD_NOT_VISIBLE);
@@ -54,5 +56,6 @@ public class LoginPage {
     WebElement passwordField =
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(CSS_PASSWORD_FIELD)));
     Assert.assertTrue(passwordField.isDisplayed(), MSG_PASSWORD_FIELD_NOT_VISIBLE);
+    return this;
   }
 }
