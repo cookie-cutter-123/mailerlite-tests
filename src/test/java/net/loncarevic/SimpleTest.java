@@ -200,6 +200,126 @@ public class SimpleTest {
             .executeScript("arguments[0].scrollIntoView({block: 'center'});", doneEditingButton);
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", doneEditingButton);
 
+        // ### Assert the Review and schedule page ###
+        // Wait for the "Review and schedule" page to load
+        wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//h1[contains(text(), 'Review and schedule')]")));
+
+        // Assert text content
+        WebElement subjectElement =
+            wait.until(
+                ExpectedConditions.presenceOfElementLocated(
+                    By.cssSelector("[data-test-id='subject'] p:last-child")));
+        Assert.assertEquals(
+            subjectElement.getText().trim(), "Test Campaign Subject", "Subject text is incorrect.");
+
+        Assert.assertEquals(
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(
+                            "[data-test-id='subject'] p:last-child"))) // Selects last <p> which
+                // contains actual text
+                .getText()
+                .trim(),
+            "Test Campaign Subject",
+            "Subject text is incorrect.");
+
+        Assert.assertEquals(
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(
+                            "[data-test-id='sender'] p:last-child"))) // Adjusted to select the
+                // correct <p>
+                .getText()
+                .trim(),
+            "Lončarević (igor@loncarevic.net)",
+            "Sender text is incorrect.");
+
+        Assert.assertEquals(
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(
+                            "[data-test-id='reply-to'] p:last-child"))) // Adjusted to select the
+                // correct <p>
+                .getText()
+                .trim(),
+            "igor@loncarevic.net",
+            "Reply-to text is incorrect.");
+
+        Assert.assertEquals(
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(
+                            "[data-test-id='campaign-language'] p:last-child"))) // Adjusted to
+                // select the
+                // correct <p>
+                .getText()
+                .trim(),
+            "English",
+            "Campaign language text is incorrect.");
+
+        Assert.assertTrue(
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector("[data-test-id='tracking-options']")))
+                .getText()
+                .contains("Track opens: Enabled"),
+            "Tracking options text is incorrect.");
+
+        // Locate recipients
+        WebElement recipientsElement =
+            wait.until(
+                ExpectedConditions.visibilityOfElementLocated(
+                    By.cssSelector("[data-test-id='recipents-section']")));
+
+        // Extract individual spans
+        WebElement groupsLabel =
+            recipientsElement.findElement(By.xpath(".//span[contains(text(), 'Groups:')]"));
+        WebElement groupName =
+            recipientsElement.findElement(By.xpath(".//span[contains(text(), 'subs')]"));
+
+        // Get text and trim any extra spaces
+        String groupsText = groupsLabel.getText().trim();
+        String groupValue = groupName.getText().trim();
+
+        // Print extracted values for debugging
+        System.out.println("Recipients section extracted: " + groupsText + " " + groupValue);
+
+        Assert.assertEquals(
+            groupsText + " " + groupValue, "Groups: subs", "Recipients section text is incorrect.");
+
+        // Assert buttons are clickable (except the last one)
+        String[] clickableButtons = {
+          "subject-generator-button",
+          "select-recipients-button",
+          "send-test-email-button",
+          "edit-content-button",
+          "preview-email-button",
+          "preview-plain-text",
+          "edit-plain-text",
+          "send-now-button",
+          "send-later-button",
+          "send-timezone-button",
+          "smart-sending-button",
+          "button-back"
+        };
+
+        for (String buttonId : clickableButtons) {
+          WebElement button =
+              wait.until(
+                  ExpectedConditions.elementToBeClickable(
+                      By.cssSelector("[data-test-id='" + buttonId + "']")));
+          Assert.assertTrue(button.isDisplayed(), "Button " + buttonId + " is not displayed");
+        }
+
+        // Click the "Send" button
+        WebElement sendButton =
+            wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("[data-test-id='button-send']")));
+        sendButton.click();
+
       } finally {
         driver.quit();
       }
