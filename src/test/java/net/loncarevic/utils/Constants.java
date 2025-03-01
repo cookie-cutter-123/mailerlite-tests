@@ -1,4 +1,4 @@
-package net.loncarevic;
+package net.loncarevic.utils;
 
 public class Constants {
   public static final String URL_DASHBOARD = "https://dashboard.mailerlite.com";

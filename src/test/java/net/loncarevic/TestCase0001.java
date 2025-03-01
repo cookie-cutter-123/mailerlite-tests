@@ -1,7 +1,9 @@
 package net.loncarevic;
 
-import static net.loncarevic.Constants.*;
+import static net.loncarevic.utils.Constants.*;
 import static net.loncarevic.utils.LocatorUtils.byDataTestId;
+import static net.loncarevic.utils.PopUpUtils.dismissCookiePopupIfPresent;
+import static net.loncarevic.utils.PopUpUtils.dismissGlowUpPopupIfPresent;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -298,36 +300,6 @@ public class TestCase0001 {
       logger.warn(WARN_SESSION_EXPIRED);
     } else {
       logger.info(INFO_SESSION_VALID);
-    }
-  }
-
-  private void dismissCookiePopupIfPresent(WebDriverWait wait) {
-    try {
-      WebElement rejectAllButton =
-          wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_REJECT_ALL_BUTTON)));
-      rejectAllButton.click();
-      wait.until(ExpectedConditions.invisibilityOf(rejectAllButton));
-    } catch (TimeoutException e) {
-      logger.debug(TEXT_NO_COOKIE_POPUP);
-    }
-  }
-
-  private void dismissGlowUpPopupIfPresent(WebDriverWait wait) {
-    try {
-      // Wait for the modal that contains the pop-up text
-      WebElement popupModal =
-          wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(XPATH_GLOW_UP_POPUP)));
-
-      // Find and click the "No thanks" button
-      WebElement noThanksButton =
-          wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_NO_THANKS_BUTTON)));
-      noThanksButton.click();
-
-      // Wait for the modal to disappear
-      wait.until(ExpectedConditions.invisibilityOf(popupModal));
-
-    } catch (TimeoutException e) {
-      logger.debug(TEXT_NO_GLOW_UP_POPUP);
     }
   }
 }
