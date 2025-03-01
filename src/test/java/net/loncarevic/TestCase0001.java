@@ -1,6 +1,7 @@
 package net.loncarevic;
 
 import static net.loncarevic.utils.Constants.*;
+import static net.loncarevic.utils.CookieUtils.injectSessionIntoSelenium;
 
 import net.loncarevic.base.BaseTest;
 import net.loncarevic.pageobjects.CampaignsPage;
