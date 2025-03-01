@@ -12,8 +12,8 @@ import org.testng.Assert;
 
 public class DashboardPage {
 
-  private WebDriver driver;
-  private WebDriverWait wait;
+  private final WebDriver driver;
+  private final WebDriverWait wait;
 
   public DashboardPage(WebDriver driver, WebDriverWait wait) {
     this.driver = driver;

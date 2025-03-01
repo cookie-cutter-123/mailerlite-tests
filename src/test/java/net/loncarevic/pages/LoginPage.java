@@ -11,8 +11,8 @@ import org.testng.Assert;
 
 public class LoginPage {
 
-  private WebDriver driver;
-  private WebDriverWait wait;
+  private final WebDriver driver;
+  private final WebDriverWait wait;
 
   public LoginPage(WebDriver driver, WebDriverWait wait) {
     this.driver = driver;

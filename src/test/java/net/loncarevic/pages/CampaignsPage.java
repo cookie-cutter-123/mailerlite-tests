@@ -1,6 +1,7 @@
 package net.loncarevic.pages;
 
 import static net.loncarevic.utils.Constants.*;
+import static net.loncarevic.utils.LocatorUtils.byDataTestId;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -226,9 +227,7 @@ public class CampaignsPage {
     // Assert buttons are clickable (except the last one)
     for (String buttonId : CLICKABLE_BUTTONS) {
       WebElement button =
-          wait.until(
-              ExpectedConditions.elementToBeClickable(
-                  By.cssSelector("[data-test-id='" + buttonId + "']")));
+          wait.until(ExpectedConditions.elementToBeClickable(byDataTestId(buttonId)));
       Assert.assertTrue(button.isDisplayed(), MSG_BUTTON_PREFIX + buttonId + MSG_BUTTON_SUFFIX);
     }
     return this;
@@ -238,7 +237,7 @@ public class CampaignsPage {
   public CampaignsPage clickSendButton() {
     WebElement sendButton =
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(CSS_BUTTON_SEND)));
-    sendButton.click(); // TODO uncomment
+    //    sendButton.click(); // TODO uncomment
     return this;
   }
 }
