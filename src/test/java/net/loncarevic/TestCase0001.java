@@ -1,5 +1,7 @@
 package net.loncarevic;
 
+import static net.loncarevic.Constants.*;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -14,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class SimpleTest {
-  private static final Logger logger = LoggerFactory.getLogger(SimpleTest.class);
+public class TestCase0001 {
+  private static final Logger logger = LoggerFactory.getLogger(TestCase0001.class);
 
   @Test
   public void testDashboardUI() {
@@ -36,46 +38,40 @@ public class SimpleTest {
 
       try {
         // Open login page
-        driver.get("https://dashboard.mailerlite.com");
+        driver.get(URL_DASHBOARD);
         String loginTitle = driver.getTitle();
-        Assert.assertNotNull(loginTitle, "Login page title is null.");
+        Assert.assertNotNull(loginTitle, MSG_LOGIN_TITLE_NULL);
         Assert.assertTrue(
-            loginTitle.contains("Login | MailerLite"),
-            "Unexpected login page title: " + loginTitle);
+            loginTitle.contains(TITLE_LOGIN), MSG_UNEXPECTED_LOGIN_TITLE + loginTitle);
 
         // Assert login page UI elements
         String loginPage = driver.getPageSource();
-        Assert.assertNotNull(loginPage, "Login page source is null.");
-        Assert.assertTrue(loginPage.contains("Welcome back"), "Welcome back text is missing");
+        Assert.assertNotNull(loginPage, MSG_LOGIN_PAGE_SOURCE_NULL);
+        Assert.assertTrue(loginPage.contains(TEXT_WELCOME_BACK), MSG_WELCOME_BACK_MISSING);
         Assert.assertTrue(
-            loginPage.contains("Don’t have an account?"), "Don't have an account text is missing");
-        Assert.assertTrue(loginPage.contains("Sign up"), "Sign up text is missing");
-        Assert.assertTrue(
-            loginPage.contains("Remember me for 7 days"), "Remember me checkbox text is missing");
-        Assert.assertTrue(
-            loginPage.contains("Forgot your password?"), "Forgot password link is missing");
-        Assert.assertTrue(loginPage.contains("Login"), "Login button text is missing");
-        Assert.assertTrue(
-            loginPage.contains("I can't login to my account"), "Login issue text is missing");
+            loginPage.contains(TEXT_DONT_HAVE_ACCOUNT), MSG_DONT_HAVE_ACCOUNT_MISSING);
+        Assert.assertTrue(loginPage.contains(TEXT_SIGN_UP), MSG_SIGN_UP_MISSING);
+        Assert.assertTrue(loginPage.contains(TEXT_REMEMBER_ME), MSG_REMEMBER_ME_MISSING);
+        Assert.assertTrue(loginPage.contains(TEXT_FORGOT_PASSWORD), MSG_FORGOT_PASSWORD_MISSING);
+        Assert.assertTrue(loginPage.contains(TEXT_LOGIN_BUTTON), MSG_LOGIN_BUTTON_MISSING);
+        Assert.assertTrue(loginPage.contains(TEXT_LOGIN_ISSUE), MSG_LOGIN_ISSUE_MISSING);
 
         // Assert input fields exist
         WebElement emailField =
             wait.until(
-                ExpectedConditions.presenceOfElementLocated(
-                    By.cssSelector("input#email[type='email']")));
-        Assert.assertTrue(emailField.isDisplayed(), "Email field is not visible");
+                ExpectedConditions.presenceOfElementLocated(By.cssSelector(CSS_EMAIL_FIELD)));
+        Assert.assertTrue(emailField.isDisplayed(), MSG_EMAIL_FIELD_NOT_VISIBLE);
 
         WebElement passwordField =
             wait.until(
-                ExpectedConditions.presenceOfElementLocated(
-                    By.cssSelector("input#password[type='password']")));
-        Assert.assertTrue(passwordField.isDisplayed(), "Password field is not visible");
+                ExpectedConditions.presenceOfElementLocated(By.cssSelector(CSS_PASSWORD_FIELD)));
+        Assert.assertTrue(passwordField.isDisplayed(), MSG_PASSWORD_FIELD_NOT_VISIBLE);
 
         // Inject session cookie to bypass login because of the reCAPTCHA
         injectSessionIntoSelenium(driver);
 
         // Navigate to the dashboard explicitly
-        driver.get("https://dashboard.mailerlite.com/");
+        driver.get(URL_DASHBOARD);
 
         // Close cookie popup if present
         dismissCookiePopupIfPresent(wait);
@@ -83,64 +79,57 @@ public class SimpleTest {
         // Close the "A glow up for your pop-ups!" modal
         dismissGlowUpPopupIfPresent(wait);
 
-        // Wait for UI to load after login
         wait.until(
             ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//h1[contains(text(), 'Dashboard')]")));
+                By.xpath("//h1[contains(text(), '" + TEXT_DASHBOARD + "')]"))); // TODO
 
         // Verify successful login by checking the Dashboard title
         String dashboardTitle = driver.getTitle();
-        Assert.assertNotNull(dashboardTitle, "Dashboard page title is null.");
+        Assert.assertNotNull(dashboardTitle, MSG_DASHBOARD_TITLE_NULL);
         Assert.assertTrue(
-            dashboardTitle.contains("Dashboard"), "Unexpected dashboard title: " + dashboardTitle);
+            dashboardTitle.contains(TEXT_DASHBOARD),
+            MSG_UNEXPECTED_DASHBOARD_TITLE + dashboardTitle);
 
         // Click on the "Campaigns" link
         WebElement campaignsLink =
-            wait.until(
-                ExpectedConditions.elementToBeClickable(
-                    By.xpath(
-                        "//a[contains(@href, '/campaigns/status') and .//span[text()='Campaigns']]")));
+            wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_CAMPAIGNS_LINK)));
         campaignsLink.click();
 
         String campaignTitle = driver.getTitle();
-        Assert.assertNotNull(campaignTitle, "Campaign page title is null.");
+        Assert.assertNotNull(campaignTitle, MSG_CAMPAIGN_PAGE_TITLE_NULL);
         Assert.assertTrue(
-            campaignTitle.contains("Campaigns | MailerLite"),
-            "Unexpected Campaign page title: " + campaignTitle);
+            campaignTitle.contains(TITLE_CAMPAIGNS), MSG_UNEXPECTED_CAMPAIGN_TITLE + campaignTitle);
 
         // Click on "Create Campaign" (selector is a placeholder; update as needed)
         WebElement createCampaignButton =
             wait.until(
                 ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("[data-test-id='create-campaign-button']")));
+                    By.cssSelector(CSS_CREATE_CAMPAIGN_BUTTON)));
         createCampaignButton.click();
 
         // Select "Regular Campaign"
         WebElement regularCampaignOption =
             wait.until(
-                ExpectedConditions.elementToBeClickable(
-                    By.xpath("//h3[text()='Regular campaign']/ancestor::button")));
+                ExpectedConditions.elementToBeClickable(By.xpath(XPATH_REGULAR_CAMPAIGN_OPTION)));
         regularCampaignOption.click();
 
         // Fill in the Campaign name
-        WebElement campaignNameParent =
-            driver.findElement(By.cssSelector("[data-test-id='campaign-name-input']"));
+        WebElement campaignNameParent = driver.findElement(By.cssSelector(CSS_CAMPAIGN_NAME_INPUT));
         campaignNameParent.click();
         WebElement campaignNameField = campaignNameParent.findElement(By.tagName("input"));
-        campaignNameField.sendKeys("Automated Campaign");
+        campaignNameField.sendKeys(TEXT_CAMPAIGN_NAME);
 
         // Fill in the Campaign subject
-        WebElement subjectParent =
-            driver.findElement(By.cssSelector("[data-test-id='subject-input']"));
+        WebElement subjectParent = driver.findElement(By.cssSelector(CSS_SUBJECT_INPUT));
         subjectParent.click();
         WebElement subjectField = subjectParent.findElement(By.tagName("input"));
-        subjectField.sendKeys("Test Campaign Subject");
+        subjectField.sendKeys(TEXT_CAMPAIGN_SUBJECT);
 
         // Select the group of subscribers
         WebElement recipientsButton =
             wait.until(
                 ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("[data-test-id='recipients-selection-box']")));
+                    By.cssSelector(CSS_RECIPIENTS_SELECTION_BOX)));
 
         // Open recipients
         Actions actions = new Actions(driver);
@@ -151,48 +140,44 @@ public class SimpleTest {
         // Tick a subscribers group
         WebElement checkbox =
             wait.until(
-                ExpectedConditions.elementToBeClickable(
-                    By.cssSelector(
-                        "[data-test-id='subscriber-group-row'] input[type='checkbox']")));
+                ExpectedConditions.elementToBeClickable(By.cssSelector(CSS_SUBSCRIBER_GROUP_ROW)));
         checkbox.click();
 
         // Save recipients
         WebElement saveRecipientsButton =
             wait.until(
                 ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("[data-test-id='save-recipients-button']")));
+                    By.cssSelector(CSS_SAVE_RECIPIENTS_BUTTON)));
         saveRecipientsButton.click();
 
         // Click Continue
         WebElement nextButton =
             wait.until(
                 ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("[data-test-id='create-campaign-next-button']")));
+                    By.cssSelector(CSS_CREATE_CAMPAIGN_NEXT_BUTTON)));
         nextButton.click();
 
         // Click on the Start from scratch tab
         WebElement startFromScratchTab =
             wait.until(
                 ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("[data-test-id='start-from-scratch-tab']")));
+                    By.cssSelector(CSS_START_FROM_SCRATCH_TAB)));
         startFromScratchTab.click();
 
         // Click on Drag & drop editor
         WebElement dragAndDropEditor =
             wait.until(
-                ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("[data-test-id='drag-drop-editor']")));
+                ExpectedConditions.elementToBeClickable(By.cssSelector(CSS_DRAG_DROP_EDITOR)));
         dragAndDropEditor.click();
 
         // Locate the green button
         WebElement doneEditingButton =
             wait.until(
-                ExpectedConditions.presenceOfElementLocated(
-                    By.xpath("//button[contains(@class, 'btn-green')]")));
+                ExpectedConditions.presenceOfElementLocated(By.xpath(XPATH_DONE_EDITING_BUTTON)));
 
         // Wait until "Done editing" text is visible inside the button
-        wait.until(ExpectedConditions.textToBePresentInElement(doneEditingButton, "Done editing"));
-
+        wait.until(
+            ExpectedConditions.textToBePresentInElement(doneEditingButton, TEXT_DONE_EDITING));
         // Wait until the button is not disabled
         wait.until(
             ExpectedConditions.not(
@@ -207,121 +192,85 @@ public class SimpleTest {
         // Wait for the "Review and schedule" page to load
         wait.until(
             ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//h1[contains(text(), 'Review and schedule')]")));
+                By.xpath("//h1[contains(text(), '" + TEXT_REVIEW_AND_SCHEDULE + "')]")));
 
         // Assert text content
-        WebElement subjectElement =
-            wait.until(
-                ExpectedConditions.presenceOfElementLocated(
-                    By.cssSelector("[data-test-id='subject'] p:last-child")));
         Assert.assertEquals(
-            subjectElement.getText().trim(), "Test Campaign Subject", "Subject text is incorrect.");
+            wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(CSS_SUBJECT_ELEMENT)))
+                .getText()
+                .trim(),
+            TEXT_CAMPAIGN_SUBJECT,
+            MSG_SUBJECT_INCORRECT);
 
         Assert.assertEquals(
             wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector(
-                            "[data-test-id='subject'] p:last-child"))) // Selects last <p> which
-                // contains actual text
+                        By.cssSelector(CSS_SENDER_ELEMENT)))
                 .getText()
                 .trim(),
-            "Test Campaign Subject",
-            "Subject text is incorrect.");
+            TEXT_SENDER,
+            MSG_SENDER_INCORRECT);
 
         Assert.assertEquals(
             wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector(
-                            "[data-test-id='sender'] p:last-child"))) // Adjusted to select the
-                // correct <p>
+                        By.cssSelector(CSS_REPLY_TO_ELEMENT)))
                 .getText()
                 .trim(),
-            "Lončarević (igor@loncarevic.net)",
-            "Sender text is incorrect.");
+            TEXT_REPLY_TO,
+            MSG_REPLY_TO_INCORRECT);
 
         Assert.assertEquals(
             wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector(
-                            "[data-test-id='reply-to'] p:last-child"))) // Adjusted to select the
-                // correct <p>
+                        By.cssSelector(CSS_CAMPAIGN_LANGUAGE_ELEMENT)))
                 .getText()
                 .trim(),
-            "igor@loncarevic.net",
-            "Reply-to text is incorrect.");
-
-        Assert.assertEquals(
-            wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector(
-                            "[data-test-id='campaign-language'] p:last-child"))) // Adjusted to
-                // select the
-                // correct <p>
-                .getText()
-                .trim(),
-            "English",
-            "Campaign language text is incorrect.");
+            TEXT_CAMPAIGN_LANGUAGE,
+            MSG_CAMPAIGN_LANGUAGE_INCORRECT);
 
         Assert.assertTrue(
             wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector("[data-test-id='tracking-options']")))
+                        By.cssSelector(CSS_TRACKING_OPTIONS)))
                 .getText()
-                .contains("Track opens: Enabled"),
-            "Tracking options text is incorrect.");
+                .contains(TEXT_TRACK_OPENS_ENABLED),
+            MSG_TRACKING_OPTIONS_INCORRECT);
 
         // Locate recipients
         WebElement recipientsElement =
             wait.until(
                 ExpectedConditions.visibilityOfElementLocated(
-                    By.cssSelector("[data-test-id='recipents-section']")));
+                    By.cssSelector(CSS_RECIPIENTS_SECTION)));
 
         // Extract individual spans
-        WebElement groupsLabel =
-            recipientsElement.findElement(By.xpath(".//span[contains(text(), 'Groups:')]"));
-        WebElement groupName =
-            recipientsElement.findElement(By.xpath(".//span[contains(text(), 'subs')]"));
+        WebElement groupsLabel = recipientsElement.findElement(By.xpath(XPATH_GROUPS_LABEL));
+        WebElement groupName = recipientsElement.findElement(By.xpath(XPATH_GROUP_NAME));
 
         // Get text and trim any extra spaces
         String groupsText = groupsLabel.getText().trim();
         String groupValue = groupName.getText().trim();
 
         // Log extracted values for debugging
-        logger.debug("Recipients section extracted: {} {}", groupsText, groupValue);
-
+        logger.debug(MSG_RECIPIENTS_EXTRACTED, groupsText, groupValue);
         Assert.assertEquals(
-            groupsText + " " + groupValue, "Groups: subs", "Recipients section text is incorrect.");
+            groupsText + " " + groupValue, TEXT_RECIPIENTS, MSG_RECIPIENTS_SECTION_INCORRECT);
 
         // Assert buttons are clickable (except the last one)
-        String[] clickableButtons = {
-          "subject-generator-button",
-          "select-recipients-button",
-          "send-test-email-button",
-          "edit-content-button",
-          "preview-email-button",
-          "preview-plain-text",
-          "edit-plain-text",
-          "send-now-button",
-          "send-later-button",
-          "send-timezone-button",
-          "smart-sending-button",
-          "button-back"
-        };
-
-        for (String buttonId : clickableButtons) {
+        for (String buttonId : CLICKABLE_BUTTONS) {
           WebElement button =
               wait.until(
                   ExpectedConditions.elementToBeClickable(
                       By.cssSelector("[data-test-id='" + buttonId + "']")));
-          Assert.assertTrue(button.isDisplayed(), "Button " + buttonId + " is not displayed");
+          Assert.assertTrue(button.isDisplayed(), MSG_BUTTON_PREFIX + buttonId + MSG_BUTTON_SUFFIX);
         }
 
         // Click the "Send" button
         WebElement sendButton =
-            wait.until(
-                ExpectedConditions.elementToBeClickable(
-                    By.cssSelector("[data-test-id='button-send']")));
-        //        sendButton.click(); // TODO uncomment when done
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(CSS_BUTTON_SEND)));
+        // sendButton.click(); // TODO uncomment when ready
 
       } finally {
         driver.quit();
