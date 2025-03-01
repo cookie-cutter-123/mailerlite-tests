@@ -9,10 +9,13 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class SimpleTest {
+  private static final Logger logger = LoggerFactory.getLogger(SimpleTest.class);
 
   @Test
   public void testDashboardUI() {
@@ -283,8 +286,8 @@ public class SimpleTest {
         String groupsText = groupsLabel.getText().trim();
         String groupValue = groupName.getText().trim();
 
-        // Print extracted values for debugging
-        System.out.println("Recipients section extracted: " + groupsText + " " + groupValue);
+        // Log extracted values for debugging
+        logger.debug("Recipients section extracted: {} {}", groupsText, groupValue);
 
         Assert.assertEquals(
             groupsText + " " + groupValue, "Groups: subs", "Recipients section text is incorrect.");
@@ -318,13 +321,13 @@ public class SimpleTest {
             wait.until(
                 ExpectedConditions.elementToBeClickable(
                     By.cssSelector("[data-test-id='button-send']")));
-        sendButton.click();
+        //        sendButton.click(); // TODO uncomment when done
 
       } finally {
         driver.quit();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("Test execution failed", e);
     }
   }
 
@@ -345,9 +348,9 @@ public class SimpleTest {
     String pageTitle = driver.getTitle();
     Assert.assertNotNull(pageTitle, "Page title is null after injecting session cookie.");
     if (pageTitle.contains("Login | MailerLite")) {
-      System.out.println("Session expired! You need to log in and update the cookie.");
+      logger.warn("Session expired! You need to log in and update the cookie.");
     } else {
-      System.out.println("Session is valid.");
+      logger.info("Session is valid.");
     }
   }
 
@@ -360,7 +363,7 @@ public class SimpleTest {
       rejectAllButton.click();
       wait.until(ExpectedConditions.invisibilityOf(rejectAllButton));
     } catch (TimeoutException e) {
-      System.out.println("No cookie popup found, continuing...");
+      logger.debug("No cookie popup found, continuing...");
     }
   }
 
@@ -383,7 +386,7 @@ public class SimpleTest {
       wait.until(ExpectedConditions.invisibilityOf(popupModal));
 
     } catch (TimeoutException e) {
-      System.out.println("No 'glow-up' popup found, continuing...");
+      logger.debug("No 'glow-up' popup found, continuing...");
     }
   }
 }
