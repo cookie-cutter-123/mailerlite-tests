@@ -1,6 +1,7 @@
 package net.loncarevic;
 
 import static net.loncarevic.Constants.*;
+import static net.loncarevic.utils.LocatorUtils.byDataTestId;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -261,9 +262,7 @@ public class TestCase0001 {
         // Assert buttons are clickable (except the last one)
         for (String buttonId : CLICKABLE_BUTTONS) {
           WebElement button =
-              wait.until(
-                  ExpectedConditions.elementToBeClickable(
-                      By.cssSelector("[data-test-id='" + buttonId + "']")));
+              wait.until(ExpectedConditions.elementToBeClickable(byDataTestId(buttonId)));
           Assert.assertTrue(button.isDisplayed(), MSG_BUTTON_PREFIX + buttonId + MSG_BUTTON_SUFFIX);
         }
 
@@ -276,43 +275,40 @@ public class TestCase0001 {
         driver.quit();
       }
     } catch (Exception e) {
-      logger.error("Test execution failed", e);
+      logger.error(MSG_TEST_EXECUTION_FAILED, e);
     }
   }
 
   private void injectSessionIntoSelenium(WebDriver driver) {
     // Read the session cookie from an environment variable
-    String cookieValue = System.getenv("MAILERLITE_COOKIE");
+    String cookieValue = System.getenv(ENV_MAILERLITE_COOKIE);
     if (cookieValue == null) {
-      throw new RuntimeException("MAILERLITE_COOKIE environment variable not set");
+      throw new RuntimeException(MSG_ENV_MAILERLITE_COOKIE_NOT_SET);
     }
 
     // Add the session cookie
-    Cookie sessionCookie =
-        new Cookie("mailerlite_session", cookieValue, ".mailerlite.com", "/", null);
+    Cookie sessionCookie = new Cookie(COOKIE_NAME, cookieValue, COOKIE_DOMAIN, "/", null);
     driver.manage().addCookie(sessionCookie);
 
     // Verify if the cookie is still valid
-    driver.get("https://dashboard.mailerlite.com/");
+    driver.get(URL_DASHBOARD);
     String pageTitle = driver.getTitle();
-    Assert.assertNotNull(pageTitle, "Page title is null after injecting session cookie.");
-    if (pageTitle.contains("Login | MailerLite")) {
-      logger.warn("Session expired! You need to log in and update the cookie.");
+    Assert.assertNotNull(pageTitle, MSG_PAGE_TITLE_NULL_AFTER_COOKIE);
+    if (pageTitle.contains(TITLE_LOGIN)) {
+      logger.warn(WARN_SESSION_EXPIRED);
     } else {
-      logger.info("Session is valid.");
+      logger.info(INFO_SESSION_VALID);
     }
   }
 
   private void dismissCookiePopupIfPresent(WebDriverWait wait) {
     try {
       WebElement rejectAllButton =
-          wait.until(
-              ExpectedConditions.elementToBeClickable(
-                  By.xpath("//button[contains(text(), 'Reject all')]")));
+          wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_REJECT_ALL_BUTTON)));
       rejectAllButton.click();
       wait.until(ExpectedConditions.invisibilityOf(rejectAllButton));
     } catch (TimeoutException e) {
-      logger.debug("No cookie popup found, continuing...");
+      logger.debug(TEXT_NO_COOKIE_POPUP);
     }
   }
 
@@ -320,22 +316,18 @@ public class TestCase0001 {
     try {
       // Wait for the modal that contains the pop-up text
       WebElement popupModal =
-          wait.until(
-              ExpectedConditions.presenceOfElementLocated(
-                  By.xpath("//h2[contains(text(), 'A glow up for your pop-ups!')]")));
+          wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(XPATH_GLOW_UP_POPUP)));
 
       // Find and click the "No thanks" button
       WebElement noThanksButton =
-          wait.until(
-              ExpectedConditions.elementToBeClickable(
-                  By.xpath("//button[contains(., 'No thanks')]")));
+          wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_NO_THANKS_BUTTON)));
       noThanksButton.click();
 
       // Wait for the modal to disappear
       wait.until(ExpectedConditions.invisibilityOf(popupModal));
 
     } catch (TimeoutException e) {
-      logger.debug("No 'glow-up' popup found, continuing...");
+      logger.debug(TEXT_NO_GLOW_UP_POPUP);
     }
   }
 }
