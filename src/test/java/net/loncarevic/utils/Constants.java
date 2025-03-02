@@ -111,4 +111,14 @@ public class Constants {
   public static final String MSG_RECIPIENTS_EXTRACTED = "Recipients section extracted: {} {}";
   public static final String MSG_BUTTON_PREFIX = "Button ";
   public static final String MSG_BUTTON_SUFFIX = " is not displayed";
+
+  // New constants for EmailAssertions magic strings
+  public static final String ASSERT_FAIL_EMAIL_NOT_RECEIVED =
+      "Email with subject [%s] and sender [%s] was not received in Mailinator.";
+  public static final String ASSERT_SENDER_MISMATCH = "Sender does not match!";
+  public static final String ASSERT_SUBJECT_MISMATCH = "Subject does not match!";
+  public static final String ASSERT_NO_NEWSLETTER_URL =
+      "No newsletter URL found in the email body!";
+  public static final String ASSERT_NEWSLETTER_CONTENT_NOT_FOUND =
+      "Expected newsletter content not found on the webpage!";
 }

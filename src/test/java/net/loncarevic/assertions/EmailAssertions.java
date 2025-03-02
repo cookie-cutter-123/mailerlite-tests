@@ -1,5 +1,7 @@
 package net.loncarevic.assertions;
 
+import static net.loncarevic.utils.Constants.*;
+
 import com.manybrain.mailinator.client.MailinatorClient;
 import com.manybrain.mailinator.client.message.GetInboxRequest;
 import com.manybrain.mailinator.client.message.GetMessageRequest;
@@ -15,8 +17,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-
-import static net.loncarevic.utils.Constants.TEXT_SENDER_LASTNAME;
 
 /** Provides assertion methods for verifying email content received via Mailinator. */
 public class EmailAssertions {
@@ -46,12 +46,8 @@ public class EmailAssertions {
       Thread.sleep(5000);
     }
 
-    Assert.fail(
-        "Email with subject ["
-            + expectedSubject
-            + "] and sender ["
-            + expectedSender
-            + "] was not received in Mailinator.");
+    // Fail test case if email with the expected details is not present
+    Assert.fail(String.format(ASSERT_FAIL_EMAIL_NOT_RECEIVED, expectedSubject, expectedSender));
   }
 
   /**
@@ -94,8 +90,8 @@ public class EmailAssertions {
       Message message,
       String expectedSender,
       String expectedSubject) {
-    Assert.assertEquals(message.getFrom(), expectedSender, "Sender does not match!");
-    Assert.assertEquals(message.getSubject(), expectedSubject, "Subject does not match!");
+    Assert.assertEquals(message.getFrom(), expectedSender, ASSERT_SENDER_MISMATCH);
+    Assert.assertEquals(message.getSubject(), expectedSubject, ASSERT_SUBJECT_MISMATCH);
 
     // Fetch full email content
     Message fullMessage =
@@ -108,7 +104,7 @@ public class EmailAssertions {
 
     // Extract the newsletter link from the email body
     String newsletterUrl = EmailUtils.extractUrlFromText(emailBody);
-    Assert.assertNotNull(newsletterUrl, "No newsletter URL found in the email body!");
+    Assert.assertNotNull(newsletterUrl, ASSERT_NO_NEWSLETTER_URL);
 
     // Validate the email content on the actual webpage
     validateEmailContentOnWebpage(newsletterUrl);
@@ -130,7 +126,8 @@ public class EmailAssertions {
         driver.switchTo().frame(0);
       }
 
-      // Wait until the body contains the sender's name, which is expected to be present in the newsletter
+      // Wait until the body contains the sender's name, which is expected to be present in the
+      // newsletter
       boolean isTextPresent =
           wait.until(
               d -> {
@@ -138,14 +135,9 @@ public class EmailAssertions {
                 return bodyText.contains(TEXT_SENDER_LASTNAME);
               });
 
-      Assert.assertTrue(isTextPresent, "Expected newsletter content not found on the webpage!");
+      Assert.assertTrue(isTextPresent, ASSERT_NEWSLETTER_CONTENT_NOT_FOUND);
     } finally {
       driver.quit();
     }
   }
-
-  // TODO magic strings
-  // TODO Move to pages?
-  // TODO fix logs not to show all emails
-  // TODO make it more simple
 }
