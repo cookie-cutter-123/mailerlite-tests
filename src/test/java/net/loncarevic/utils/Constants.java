@@ -104,6 +104,7 @@ public class Constants {
   };
   public static final String CSS_BUTTON_SEND = "[data-test-id='button-send']";
   public static final String TEXT_SENDER = "Lončarević (igor@loncarevic.net)";
+  public static final String TEXT_SENDER_LASTNAME = "Lončarević";
   public static final String TEXT_REPLY_TO = "igor@loncarevic.net";
   public static final String TEXT_CAMPAIGN_LANGUAGE = "English";
   public static final String MSG_TEST_EXECUTION_FAILED = "Test execution failed";

@@ -46,7 +46,7 @@ public class TestCase0001 extends BaseTest {
           .clickSendButton();
 
       // Wait for the email to arrive in Mailinator (up to 60 seconds)
-      EmailUtils.assertEmailReceived(TEXT_CAMPAIGN_SUBJECT, 60);
+      EmailUtils.assertEmailReceived(TEXT_SENDER_LASTNAME, TEXT_CAMPAIGN_SUBJECT, 60);
 
     } catch (Exception e) {
       logger.error(MSG_TEST_EXECUTION_FAILED, e);
