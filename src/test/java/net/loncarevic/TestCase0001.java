@@ -7,6 +7,7 @@ import net.loncarevic.base.BaseTest;
 import net.loncarevic.pages.CampaignsPage;
 import net.loncarevic.pages.DashboardPage;
 import net.loncarevic.pages.LoginPage;
+import net.loncarevic.utils.EmailUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
@@ -31,7 +32,7 @@ public class TestCase0001 extends BaseTest {
       // Navigate to the dashboard explicitly
       new DashboardPage(driver, wait).openDashboard().dismissPopups().assertDashboardTitle();
 
-      // Click on the "Campaigns" link
+      // Create and send the campaign
       new CampaignsPage(driver, wait)
           .clickCampaignsLink()
           .assertCampaignsTitle()
@@ -44,8 +45,10 @@ public class TestCase0001 extends BaseTest {
           .assertReviewAndScheduleSubPage()
           .clickSendButton();
 
+      // Wait for the email to arrive in Mailinator (up to 60 seconds)
+      EmailUtils.assertEmailReceived(TEXT_CAMPAIGN_SUBJECT, 60);
+
     } catch (Exception e) {
-      // exact catch block from your code
       logger.error(MSG_TEST_EXECUTION_FAILED, e);
     }
   }

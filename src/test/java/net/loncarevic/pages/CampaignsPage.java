@@ -237,7 +237,7 @@ public class CampaignsPage {
   public CampaignsPage clickSendButton() {
     WebElement sendButton =
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(CSS_BUTTON_SEND)));
-    //    sendButton.click(); // TODO uncomment
+    sendButton.click();
     return this;
   }
 }
