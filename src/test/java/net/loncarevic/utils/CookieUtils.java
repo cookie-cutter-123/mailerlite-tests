@@ -8,14 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
+/** Provides utility methods for handling cookies in Selenium tests. */
 public class CookieUtils {
   private static final Logger logger = LoggerFactory.getLogger(CookieUtils.class);
 
   /**
-   * Inject session cookie to bypass login because of the reCAPTCHA. This method reads the session
-   * cookie from an environment variable and adds it to the browser session.
+   * Injects the session cookie into the browser to bypass login. Reads the cookie from the
+   * environment and adds it to the current session.
    *
-   * @param driver WebDriver instance
+   * @param driver the WebDriver instance.
    */
   public static void injectSessionIntoSelenium(WebDriver driver) {
     // Read the session cookie from an environment variable
@@ -28,7 +29,7 @@ public class CookieUtils {
     driver.get(URL_DASHBOARD);
 
     // Add the session cookie
-    Cookie sessionCookie = new Cookie(COOKIE_NAME, cookieValue, COOKIE_DOMAIN, "/", null);
+    Cookie sessionCookie = new Cookie(COOKIE_NAME, cookieValue);
     driver.manage().addCookie(sessionCookie);
 
     // Refresh to apply the session

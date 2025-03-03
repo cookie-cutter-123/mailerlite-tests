@@ -30,11 +30,11 @@ public class EmailAssertions {
   /**
    * Waits for an email with the given sender and subject to arrive in Mailinator.
    *
-   * @param expectedSender The expected sender email/name
-   * @param expectedSubject The expected email subject
-   * @param timeoutSeconds Maximum wait time for the email to arrive
-   * @return The received email message
-   * @throws Exception If the email does not arrive within the timeout
+   * @param expectedSender The expected sender email or name.
+   * @param expectedSubject The expected email subject.
+   * @param timeoutSeconds Maximum wait time in seconds.
+   * @return The received email message.
+   * @throws Exception If the email does not arrive within the timeout.
    */
   private static Message waitForEmail(
       String expectedSender, String expectedSubject, int timeoutSeconds) throws Exception {
@@ -56,13 +56,12 @@ public class EmailAssertions {
   /**
    * Fetches the inbox and searches for an email matching the given sender and subject.
    *
-   * @param expectedSender The expected sender email/name
-   * @param expectedSubject The expected email subject
-   * @return Optional containing the found email, or empty if not found
+   * @param expectedSender The expected sender email or name.
+   * @param expectedSubject The expected email subject.
+   * @return Optional containing the found email, or empty if not found.
    */
   private static Optional<Message> findEmail(String expectedSender, String expectedSubject) {
     Inbox inbox = mailinatorClient.request(new GetInboxRequest(MAILINATOR_DOMAIN));
-
     return inbox.getMsgs().stream()
         .filter(
             message ->
@@ -72,21 +71,30 @@ public class EmailAssertions {
   }
 
   /**
+   * Retrieves the full email message details from Mailinator.
+   *
+   * @param email The email message with basic details.
+   * @return The full email message with its parts.
+   */
+  private static Message getFullMessage(Message email) {
+    return mailinatorClient.request(
+        new GetMessageRequest(MAILINATOR_DOMAIN, email.getTo(), email.getId()));
+  }
+
+  /**
    * Retrieves the body content of an email with the given sender and subject.
    *
-   * @param expectedSender The expected sender email/name
-   * @param expectedSubject The expected email subject
-   * @param timeoutSeconds Maximum wait time for the email to arrive
-   * @return The body content of the email
-   * @throws Exception If the email does not arrive within the timeout
+   * @param expectedSender The expected sender email or name.
+   * @param expectedSubject The expected email subject.
+   * @param timeoutSeconds Maximum wait time in seconds.
+   * @return The body content of the email.
+   * @throws Exception If the email does not arrive within the timeout.
    */
   public static String getEmailBody(
       String expectedSender, String expectedSubject, int timeoutSeconds) throws Exception {
     Message email = waitForEmail(expectedSender, expectedSubject, timeoutSeconds);
-    Message fullMessage =
-        mailinatorClient.request(
-            new GetMessageRequest(MAILINATOR_DOMAIN, email.getTo(), email.getId()));
-
+    Assert.assertNotNull(email, "Email not found");
+    Message fullMessage = getFullMessage(email);
     String emailBody = fullMessage.getParts().get(0).getBody();
     logger.info("Received Email Body: {}", emailBody);
     return emailBody;
@@ -95,18 +103,16 @@ public class EmailAssertions {
   /**
    * Asserts that an email with the given sender and subject is received and verifies its content.
    *
-   * @param expectedSender The expected sender email/name
-   * @param expectedSubject The expected email subject
-   * @param timeoutSeconds Maximum wait time for the email to arrive
-   * @throws Exception If the email does not arrive or does not match expected content
+   * @param expectedSender The expected sender email or name.
+   * @param expectedSubject The expected email subject.
+   * @param timeoutSeconds Maximum wait time in seconds.
+   * @throws Exception If the email does not arrive or its content is invalid.
    */
   public static void assertEmailReceived(
       String expectedSender, String expectedSubject, int timeoutSeconds) throws Exception {
     Message email = waitForEmail(expectedSender, expectedSubject, timeoutSeconds);
-    Message fullMessage =
-        mailinatorClient.request(
-            new GetMessageRequest(MAILINATOR_DOMAIN, email.getTo(), email.getId()));
-
+    Assert.assertNotNull(email, "Email not found");
+    Message fullMessage = getFullMessage(email);
     Assert.assertEquals(email.getFrom(), expectedSender, ASSERT_SENDER_MISMATCH);
     Assert.assertEquals(email.getSubject(), expectedSubject, ASSERT_SUBJECT_MISMATCH);
 
@@ -122,7 +128,7 @@ public class EmailAssertions {
   /**
    * Opens a newsletter URL and verifies its content using Selenium.
    *
-   * @param url The newsletter URL
+   * @param url The newsletter URL.
    */
   private static void validateEmailContentOnWebpage(String url) {
     WebDriver driver = new ChromeDriver();

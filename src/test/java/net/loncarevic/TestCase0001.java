@@ -8,13 +8,9 @@ import net.loncarevic.base.BaseTest;
 import net.loncarevic.pages.CampaignsPage;
 import net.loncarevic.pages.DashboardPage;
 import net.loncarevic.pages.LoginPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 public class TestCase0001 extends BaseTest {
-
-  private static final Logger logger = LoggerFactory.getLogger(TestCase0001.class);
 
   @Test
   public void testDashboardUI() throws Exception {

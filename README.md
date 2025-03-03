@@ -1,4 +1,4 @@
-# MailerLite Automation - Quick Readme
+# MailerLite Automation
 
 1. **Setup:**
     - Clone repo, install Java 17+ and Maven.

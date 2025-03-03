@@ -9,7 +9,7 @@ jobs:
     env:
       MAILERLITE_COOKIE: ${{ secrets.MAILERLITE_COOKIE }}
       MAILINATOR_DOMAIN: ${{ secrets.MAILINATOR_DOMAIN }}
-      MAILINATOR_API_TOKEN: ${{ secrets.MAILINATOR_API_TOKEN }}
+      MAILINATOR_API_KEY: ${{ secrets.MAILINATOR_API_KEY }}
 
     steps:
       - name: Checkout repository
