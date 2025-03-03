@@ -5,6 +5,7 @@ import static net.loncarevic.utils.LocatorUtils.byDataTestId;
 
 import java.time.Duration;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -254,7 +255,7 @@ public class SubscribersPage {
         wait.until(
             ExpectedConditions.elementToBeClickable(
                 By.xpath("//a[contains(@href, '/subscribers/create')]")));
-    addSingleSubscriberLink.click();
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addSingleSubscriberLink);
     return this;
   }
 

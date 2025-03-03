@@ -2,19 +2,23 @@ package net.loncarevic.utils;
 
 import static net.loncarevic.utils.Constants.*;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** Provides utility methods for dismissing pop-ups on the dashboard. */
 public class PopUpUtils {
   private static final Logger logger = LoggerFactory.getLogger(PopUpUtils.class);
 
   /**
-   * Closes the cookie consent pop-up if present by clicking "Reject all."
+   * Dismisses the cookie consent pop-up if it is present.
    *
-   * @param wait WebDriverWait instance to wait for elements
+   * @param wait The WebDriverWait instance to wait for elements.
    */
   public static void dismissCookiePopupIfPresent(WebDriverWait wait) {
     try {
@@ -32,9 +36,11 @@ public class PopUpUtils {
   }
 
   /**
-   * Closes the "A glow up for your pop-ups!" modal if present.
+   * Dismisses the "Glow up" pop-up if it is present. If clicking the "No thanks" button is
+   * intercepted by another overlay (such as the cookie banner), it dismisses the cookie banner
+   * first and retries.
    *
-   * @param wait WebDriverWait instance to wait for elements
+   * @param wait The WebDriverWait instance to wait for elements.
    */
   public static void dismissGlowUpPopupIfPresent(WebDriverWait wait) {
     try {
@@ -45,9 +51,12 @@ public class PopUpUtils {
       // Find and click the "No thanks" button
       WebElement noThanksButton =
           wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPATH_NO_THANKS_BUTTON)));
-      noThanksButton.click();
-
-      // Wait for the modal to disappear
+      try {
+        noThanksButton.click();
+      } catch (ElementClickInterceptedException e) {
+        dismissCookiePopupIfPresent(wait);
+        noThanksButton.click();
+      }
       wait.until(ExpectedConditions.invisibilityOf(popupModal));
 
     } catch (TimeoutException e) {

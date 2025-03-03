@@ -89,7 +89,10 @@ public class CampaignsPage {
     Actions actions = new Actions(driver);
     actions.sendKeys(Keys.PAGE_DOWN).perform();
     actions.moveToElement(recipientsButton).perform();
-    recipientsButton.click();
+    // Use JavaScript click to bypass potential overlay issues (e.g. sticky footer)
+    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].scrollIntoView(true);", recipientsButton);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", recipientsButton);
 
     // Tick a subscribers group
     WebElement checkbox =
