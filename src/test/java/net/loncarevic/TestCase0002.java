@@ -39,7 +39,13 @@ public class TestCase0002 extends BaseTest {
     // Navigate to the dashboard explicitly
     new DashboardPage(driver, wait).openDashboard().dismissPopups().assertDashboardTitle();
 
-    new SubscribersPage(driver, wait).openSubscribersPage().clickDropdownButton();
+    // Inject cookie again
+    injectSessionIntoSelenium(driver);
+
+    new SubscribersPage(driver, wait)
+        .openSubscribersPage()
+        .clickDropdownButton()
+        .selectUnsubscribedOption();
   }
 }
 
