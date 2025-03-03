@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MAILERLITE_COOKIE: ${{ secrets.MAILERLITE_COOKIE }}
+      MAILINATOR_DOMAIN: ${{ secrets.MAILINATOR_DOMAIN }}
+      MAILINATOR_API_TOKEN: ${{ secrets.MAILINATOR_API_TOKEN }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
