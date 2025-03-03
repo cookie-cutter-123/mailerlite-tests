@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MAILERLITE_COOKIE: ${{ secrets.MAILERLITE_COOKIE }}
+      MAILINATOR_DOMAIN: ${{ secrets.MAILINATOR_DOMAIN }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -21,6 +23,9 @@ jobs:
 
       - name: Set up Chrome and ChromeDriver
         uses: browser-actions/setup-chrome@v1
+
+      - name: Debug Environment Variables
+        run: env | grep MAIL
 
       - name: Run Maven tests
         run: mvn clean test
