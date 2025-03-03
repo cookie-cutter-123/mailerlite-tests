@@ -11,15 +11,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Provides utility methods for dismissing pop-ups on the dashboard. */
+/** Provides methods for dismissing pop-ups on the dashboard. */
 public class PopUpUtils {
   private static final Logger logger = LoggerFactory.getLogger(PopUpUtils.class);
 
-  /**
-   * Dismisses the cookie consent pop-up if it is present.
-   *
-   * @param wait The WebDriverWait instance to wait for elements.
-   */
+  /** Closes the cookie consent pop-up if present by clicking "Reject all." */
   public static void dismissCookiePopupIfPresent(WebDriverWait wait) {
     try {
       // Wait for the "Reject all" button and click it
@@ -35,13 +31,7 @@ public class PopUpUtils {
     }
   }
 
-  /**
-   * Dismisses the "Glow up" pop-up if it is present. If clicking the "No thanks" button is
-   * intercepted by another overlay (such as the cookie banner), it dismisses the cookie banner
-   * first and retries.
-   *
-   * @param wait The WebDriverWait instance to wait for elements.
-   */
+  /** Closes the "A glow up for your pop-ups!" modal if present. */
   public static void dismissGlowUpPopupIfPresent(WebDriverWait wait) {
     try {
       // Wait for the modal that contains the pop-up text
@@ -54,7 +44,9 @@ public class PopUpUtils {
       try {
         noThanksButton.click();
       } catch (ElementClickInterceptedException e) {
+        logger.debug("No thanks button click intercepted, dismissing cookie popup first");
         dismissCookiePopupIfPresent(wait);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("CookieBannerNotice")));
         noThanksButton.click();
       }
       wait.until(ExpectedConditions.invisibilityOf(popupModal));
