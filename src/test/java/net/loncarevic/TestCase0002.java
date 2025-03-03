@@ -8,10 +8,14 @@ import net.loncarevic.base.BaseTest;
 import net.loncarevic.pages.DashboardPage;
 import net.loncarevic.pages.SubscribersPage;
 import net.loncarevic.pages.UnsubscribePage;
+import net.loncarevic.utils.CookieUtils;
 import net.loncarevic.utils.EmailUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 public class TestCase0002 extends BaseTest {
+  private static final Logger logger = LoggerFactory.getLogger(TestCase0002.class);
 
   @Test
   public void testUnsubscribeFlow() throws Exception {
@@ -41,9 +45,38 @@ public class TestCase0002 extends BaseTest {
     // Inject cookie again
     injectSessionIntoSelenium(driver);
 
-    new SubscribersPage(driver, wait)
+    // Navigate to subscribers page
+    SubscribersPage subscribersPage = new SubscribersPage(driver, wait).openSubscribersPage();
+
+    // Check if email is present, if not, add it
+    if (!subscribersPage.isEmailPresent(SUBSCRIBER_EMAIL)) {
+      logger.info("Subscriber email not present");
+      subscribersPage
+          // Add email back to the subscribers group
+          .openSubscribersPage()
+          .clickDropdownButton()
+          .selectAllOption()
+          .selectSubscriberCheckbox(SUBSCRIBER_EMAIL)
+          .clickActionsButton()
+          .clickAddSubscriberToGroupDropdownItem()
+          .selectSubsCheckbox()
+          .clickSaveButton()
+          // Subscribe again
+          .openSubscribersPage()
+          .clickDropdownButton()
+          .selectAllOption()
+          .clickOnSubscriberEmail(SUBSCRIBER_EMAIL)
+          .clickActionsButtonForSubscriber()
+          .clickSubscribe()
+          .clickConfirmActionButton();
+    }
+    else {
+      logger.info("Subscriber email present");
+    }
+
+    subscribersPage
         // The actual test
-        .openSubscribersPage()
+            .openSubscribersPage()
         .clickDropdownButton()
         .selectUnsubscribedOption()
         .assertEmailPresent(SUBSCRIBER_EMAIL)

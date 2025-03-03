@@ -2,10 +2,7 @@ package net.loncarevic.pages;
 
 import static net.loncarevic.utils.LocatorUtils.byDataTestId;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -60,14 +57,24 @@ public class SubscribersPage {
     return this;
   }
 
+  /** Checks if a specific email is present in the list */
+  public boolean isEmailPresent(String email) {
+    try {
+      return wait.until(
+              ExpectedConditions.presenceOfElementLocated(
+                  By.xpath(
+                      "//td[contains(@class, 'subscriber')]//a[contains(text(), '"
+                          + email
+                          + "')]")))
+          .isDisplayed();
+    } catch (TimeoutException e) {
+      return false; // Email not found
+    }
+  }
+
   /** Verifies if a specific email is present in the list */
   public SubscribersPage assertEmailPresent(String email) {
-    WebElement emailElement =
-        wait.until(
-            ExpectedConditions.presenceOfElementLocated(
-                By.xpath(
-                    "//td[contains(@class, 'subscriber')]//a[contains(text(), '" + email + "')]")));
-    assert emailElement.isDisplayed() : "Email not found: " + email;
+    assert isEmailPresent(email) : "Email not found: " + email;
     return this;
   }
 
