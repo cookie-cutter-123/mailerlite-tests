@@ -37,6 +37,27 @@
       <version>1.5.17</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20250107</version>
+    </dependency>
+    <dependency>
+      <groupId>com.manybrain</groupId>
+      <artifactId>mailinator-client</artifactId>
+      <version>1.6</version>
+    </dependency>
+<!--    Old versions needed in order for Mailinator to work-->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.1</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

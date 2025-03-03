@@ -42,8 +42,8 @@ public class Constants {
   public static final String XPATH_NO_THANKS_BUTTON = "//button[contains(., 'No thanks')]";
   public static final String TEXT_NO_GLOW_UP_POPUP = "No 'glow-up' popup found, continuing...";
   public static final String TEXT_DASHBOARD = "Dashboard";
-    public static final String XPATH_H1_DASHBOARD = "//h1[contains(text(), 'Dashboard')]";
-    public static final String MSG_DASHBOARD_TITLE_NULL = "Dashboard page title is null.";
+  public static final String XPATH_H1_DASHBOARD = "//h1[contains(text(), 'Dashboard')]";
+  public static final String MSG_DASHBOARD_TITLE_NULL = "Dashboard page title is null.";
   public static final String MSG_UNEXPECTED_DASHBOARD_TITLE = "Unexpected dashboard title: ";
   public static final String TITLE_CAMPAIGNS = "Campaigns | MailerLite";
   public static final String MSG_CAMPAIGN_PAGE_TITLE_NULL = "Campaign page title is null.";
@@ -104,10 +104,31 @@ public class Constants {
   };
   public static final String CSS_BUTTON_SEND = "[data-test-id='button-send']";
   public static final String TEXT_SENDER = "Lončarević (igor@loncarevic.net)";
+  public static final String TEXT_SENDER_LASTNAME = "Lončarević";
   public static final String TEXT_REPLY_TO = "igor@loncarevic.net";
   public static final String TEXT_CAMPAIGN_LANGUAGE = "English";
   public static final String MSG_TEST_EXECUTION_FAILED = "Test execution failed";
   public static final String MSG_RECIPIENTS_EXTRACTED = "Recipients section extracted: {} {}";
   public static final String MSG_BUTTON_PREFIX = "Button ";
   public static final String MSG_BUTTON_SUFFIX = " is not displayed";
+
+  // New constants for EmailAssertions magic strings
+  public static final String ASSERT_FAIL_EMAIL_NOT_RECEIVED =
+      "Email with subject [%s] and sender [%s] was not received in Mailinator.";
+  public static final String ASSERT_SENDER_MISMATCH = "Sender does not match!";
+  public static final String ASSERT_SUBJECT_MISMATCH = "Subject does not match!";
+  public static final String ASSERT_NO_NEWSLETTER_URL =
+      "No newsletter URL found in the email body!";
+  public static final String ASSERT_NEWSLETTER_CONTENT_NOT_FOUND =
+      "Expected newsletter content not found on the webpage!";
+  public static final String SUBSCRIBER_EMAIL = "test1@team210398.testinator.com";
+  public static final int EMAIL_WAIT_TIMEOUT = 60;
+  public static final String UNSUBSCRIBE_REASON = "I no longer want to receive these emails";
+  public static final String MSG_SUBSCRIBER_NOT_PRESENT =
+      "Subscriber email not present. Adding subscriber.";
+  public static final String MSG_SUBSCRIBER_FOUND = "Subscriber email found.";
+  public static final String MSG_SUBSCRIBER_RESUBSCRIBING =
+      "Subscriber is unsubscribed. Re-subscribing...";
+  public static final String MSG_SUBSCRIBER_ALREADY_ACTIVE = "Subscriber is already active.";
+  public static final String SUBSCRIBERS_URL = "https://dashboard.mailerlite.com/subscribers";
 }
