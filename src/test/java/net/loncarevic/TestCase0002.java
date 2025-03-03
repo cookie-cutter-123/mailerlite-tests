@@ -2,9 +2,12 @@ package net.loncarevic;
 
 import static net.loncarevic.utils.Constants.TEXT_CAMPAIGN_SUBJECT;
 import static net.loncarevic.utils.Constants.TEXT_SENDER_LASTNAME;
+import static net.loncarevic.utils.CookieUtils.injectSessionIntoSelenium;
 
 import net.loncarevic.assertions.EmailAssertions;
 import net.loncarevic.base.BaseTest;
+import net.loncarevic.pages.DashboardPage;
+import net.loncarevic.pages.SubscribersPage;
 import net.loncarevic.pages.UnsubscribePage;
 import net.loncarevic.utils.EmailUtils;
 import org.testng.annotations.Test;
@@ -29,6 +32,14 @@ public class TestCase0002 extends BaseTest {
         .selectUnsubscribeReason()
         .clickSubmitButton()
         .assertUnsubscriptionSuccess();
+
+    // Inject session cookie to bypass login because of the reCAPTCHA
+    injectSessionIntoSelenium(driver);
+
+    // Navigate to the dashboard explicitly
+    new DashboardPage(driver, wait).openDashboard().dismissPopups().assertDashboardTitle();
+
+    new SubscribersPage(driver, wait).openSubscribersPage().clickDropdownButton();
   }
 }
 
