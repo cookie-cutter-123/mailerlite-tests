@@ -4,7 +4,9 @@ import static net.loncarevic.utils.Constants.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -16,7 +18,7 @@ public class PopUpUtils {
   private static final Logger logger = LoggerFactory.getLogger(PopUpUtils.class);
 
   /** Closes the cookie consent pop-up if present by clicking "Reject all." */
-  public static void dismissCookiePopupIfPresent(WebDriverWait wait) {
+  public static void dismissCookiePopupIfPresent(WebDriver driver, WebDriverWait wait) {
     try {
       // Wait for the "Reject all" button and click it
       WebElement rejectAllButton =
@@ -28,11 +30,20 @@ public class PopUpUtils {
     } catch (TimeoutException e) {
       // If the pop-up is not found, log debug info and continue
       logger.debug(TEXT_NO_COOKIE_POPUP);
+      // If the cookie banner is still present, remove it using JavaScript.
+      try {
+        WebElement cookieBanner = driver.findElement(By.id("CookieBannerNotice"));
+        ((JavascriptExecutor) driver)
+            .executeScript("arguments[0].style.display='none';", cookieBanner);
+        logger.debug("CookieBannerNotice was hidden via JavaScript.");
+      } catch (Exception ex) {
+        logger.debug("Cookie banner not present or could not be removed via JavaScript.");
+      }
     }
   }
 
   /** Closes the "A glow up for your pop-ups!" modal if present. */
-  public static void dismissGlowUpPopupIfPresent(WebDriverWait wait) {
+  public static void dismissGlowUpPopupIfPresent(WebDriver driver, WebDriverWait wait) {
     try {
       // Wait for the modal that contains the pop-up text
       WebElement popupModal =
@@ -45,7 +56,7 @@ public class PopUpUtils {
         noThanksButton.click();
       } catch (ElementClickInterceptedException e) {
         logger.debug("No thanks button click intercepted, dismissing cookie popup first");
-        dismissCookiePopupIfPresent(wait);
+        dismissCookiePopupIfPresent(driver, wait);
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("CookieBannerNotice")));
         noThanksButton.click();
       }

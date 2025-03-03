@@ -29,10 +29,10 @@ public class DashboardPage {
   /** Close cookie popup if present. Close the "A glow up for your pop-ups!" modal if present. */
   public DashboardPage dismissPopups() {
     // Close cookie popup if present
-    dismissCookiePopupIfPresent(wait);
+    dismissCookiePopupIfPresent(driver, wait);
 
     // Close the "A glow up for your pop-ups!" modal
-    dismissGlowUpPopupIfPresent(wait);
+    dismissGlowUpPopupIfPresent(driver, wait);
     return this;
   }
 
