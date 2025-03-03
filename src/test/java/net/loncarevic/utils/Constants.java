@@ -107,7 +107,6 @@ public class Constants {
   public static final String TEXT_SENDER_LASTNAME = "Lončarević";
   public static final String TEXT_REPLY_TO = "igor@loncarevic.net";
   public static final String TEXT_CAMPAIGN_LANGUAGE = "English";
-  public static final String MSG_TEST_EXECUTION_FAILED = "Test execution failed";
   public static final String MSG_RECIPIENTS_EXTRACTED = "Recipients section extracted: {} {}";
   public static final String MSG_BUTTON_PREFIX = "Button ";
   public static final String MSG_BUTTON_SUFFIX = " is not displayed";

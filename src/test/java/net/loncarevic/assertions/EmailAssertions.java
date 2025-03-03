@@ -83,7 +83,8 @@ public class EmailAssertions {
   public static String getEmailBody(
       String expectedSender, String expectedSubject, int timeoutSeconds) throws Exception {
     Message email = waitForEmail(expectedSender, expectedSubject, timeoutSeconds);
-    Message fullMessage =
+      assert email != null;
+      Message fullMessage =
         mailinatorClient.request(
             new GetMessageRequest(MAILINATOR_DOMAIN, email.getTo(), email.getId()));
 
@@ -103,7 +104,8 @@ public class EmailAssertions {
   public static void assertEmailReceived(
       String expectedSender, String expectedSubject, int timeoutSeconds) throws Exception {
     Message email = waitForEmail(expectedSender, expectedSubject, timeoutSeconds);
-    Message fullMessage =
+      assert email != null;
+      Message fullMessage =
         mailinatorClient.request(
             new GetMessageRequest(MAILINATOR_DOMAIN, email.getTo(), email.getId()));
 
