@@ -78,6 +78,21 @@ public class SubscribersPage {
     return this;
   }
 
+  public boolean isUnsubscribed(String email) {
+    try {
+      WebElement statusElement =
+          wait.until(
+              ExpectedConditions.presenceOfElementLocated(
+                  By.xpath(
+                      "//tr[td//a[contains(text(), '"
+                          + email
+                          + "')]]/td[contains(text(), 'Unsubscribed')]")));
+      return statusElement.isDisplayed();
+    } catch (TimeoutException e) {
+      return false; // Email is not unsubscribed
+    }
+  }
+
   public SubscribersPage assertUnsubscribeReason(String email, String expectedReason)
       throws InterruptedException {
     WebElement reasonElement =

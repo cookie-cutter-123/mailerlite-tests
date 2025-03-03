@@ -8,7 +8,6 @@ import net.loncarevic.base.BaseTest;
 import net.loncarevic.pages.DashboardPage;
 import net.loncarevic.pages.SubscribersPage;
 import net.loncarevic.pages.UnsubscribePage;
-import net.loncarevic.utils.CookieUtils;
 import net.loncarevic.utils.EmailUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,20 +47,31 @@ public class TestCase0002 extends BaseTest {
     // Navigate to subscribers page
     SubscribersPage subscribersPage = new SubscribersPage(driver, wait).openSubscribersPage();
 
-    // Check if email is present, if not, add it
+    // Check if email exists, if not, add it
     if (!subscribersPage.isEmailPresent(SUBSCRIBER_EMAIL)) {
-      logger.info("Subscriber email not present");
+      logger.info("Subscriber email not present. Adding subscriber.");
       subscribersPage
-          // Add email back to the subscribers group
-          .openSubscribersPage()
-          .clickDropdownButton()
-          .selectAllOption()
-          .selectSubscriberCheckbox(SUBSCRIBER_EMAIL)
-          .clickActionsButton()
-          .clickAddSubscriberToGroupDropdownItem()
-          .selectSubsCheckbox()
-          .clickSaveButton()
-          // Subscribe again
+          .clickAddSubscribersButton()
+          .clickAddSingleSubscriber()
+          .enterEmail(SUBSCRIBER_EMAIL)
+          .selectGroupSubs()
+          .clickSaveButton();
+    } else {
+      logger.info("Subscriber email found.");
+    }
+
+    // Verify email appears in Unsubscribed list with correct reason
+    subscribersPage
+        .openSubscribersPage()
+        .clickDropdownButton()
+        .selectUnsubscribedOption()
+        .assertEmailPresent(SUBSCRIBER_EMAIL)
+        .assertUnsubscribeReason(SUBSCRIBER_EMAIL, "I no longer want to receive these emails");
+
+    // Re-subscribe if necessary
+    if (subscribersPage.isUnsubscribed(SUBSCRIBER_EMAIL)) {
+      logger.info("Subscriber is unsubscribed. Re-subscribing...");
+      subscribersPage
           .openSubscribersPage()
           .clickDropdownButton()
           .selectAllOption()
@@ -69,42 +79,11 @@ public class TestCase0002 extends BaseTest {
           .clickActionsButtonForSubscriber()
           .clickSubscribe()
           .clickConfirmActionButton();
+    } else {
+      logger.info("Subscriber is already active.");
     }
-    else {
-      logger.info("Subscriber email present");
-    }
-
-    subscribersPage
-        // The actual test
-            .openSubscribersPage()
-        .clickDropdownButton()
-        .selectUnsubscribedOption()
-        .assertEmailPresent(SUBSCRIBER_EMAIL)
-        .assertUnsubscribeReason(SUBSCRIBER_EMAIL, "I no longer want to receive these emails")
-        // Add email back to the subscribers group
-        .openSubscribersPage()
-        .clickDropdownButton()
-        .selectAllOption()
-        .selectSubscriberCheckbox(SUBSCRIBER_EMAIL)
-        .clickActionsButton()
-        .clickAddSubscriberToGroupDropdownItem()
-        .selectSubsCheckbox()
-        .clickSaveButton()
-        // Subscribe again
-        .openSubscribersPage()
-        .clickDropdownButton()
-        .selectAllOption()
-        .clickOnSubscriberEmail(SUBSCRIBER_EMAIL)
-        .clickActionsButtonForSubscriber()
-        .clickSubscribe()
-        .clickConfirmActionButton();
-
-    Thread.sleep(4000); // TODO remove
   }
 }
 
-// TODO subs assertions
-// TODO restructure this
 // TODO restructure EmailAssertions
-// TODO Prepare TC1 with adding an email to subs!
 // TODO constants
