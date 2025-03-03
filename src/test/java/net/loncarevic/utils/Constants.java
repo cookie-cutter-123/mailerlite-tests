@@ -121,4 +121,5 @@ public class Constants {
       "No newsletter URL found in the email body!";
   public static final String ASSERT_NEWSLETTER_CONTENT_NOT_FOUND =
       "Expected newsletter content not found on the webpage!";
+  public static final String SUBSCRIBER_EMAIL = "test1@team210398.testinator.com";
 }

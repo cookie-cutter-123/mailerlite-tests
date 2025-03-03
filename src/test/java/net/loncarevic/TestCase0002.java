@@ -1,7 +1,6 @@
 package net.loncarevic;
 
-import static net.loncarevic.utils.Constants.TEXT_CAMPAIGN_SUBJECT;
-import static net.loncarevic.utils.Constants.TEXT_SENDER_LASTNAME;
+import static net.loncarevic.utils.Constants.*;
 import static net.loncarevic.utils.CookieUtils.injectSessionIntoSelenium;
 
 import net.loncarevic.assertions.EmailAssertions;
@@ -43,9 +42,31 @@ public class TestCase0002 extends BaseTest {
     injectSessionIntoSelenium(driver);
 
     new SubscribersPage(driver, wait)
+        // The actual test
         .openSubscribersPage()
         .clickDropdownButton()
-        .selectUnsubscribedOption();
+        .selectUnsubscribedOption()
+        .assertEmailPresent(SUBSCRIBER_EMAIL)
+        .assertUnsubscribeReason(SUBSCRIBER_EMAIL, "I no longer want to receive these emails")
+        // Add email back to the subscribers group
+        .openSubscribersPage()
+        .clickDropdownButton()
+        .selectAllOption()
+        .selectSubscriberCheckbox(SUBSCRIBER_EMAIL)
+        .clickActionsButton()
+        .clickAddSubscriberToGroupDropdownItem()
+        .selectSubsCheckbox()
+        .clickSaveButton()
+        // Subscribe again
+        .openSubscribersPage()
+        .clickDropdownButton()
+        .selectAllOption()
+        .clickOnSubscriberEmail(SUBSCRIBER_EMAIL)
+        .clickActionsButtonForSubscriber()
+        .clickSubscribe()
+        .clickConfirmActionButton();
+
+    Thread.sleep(4000); // TODO remove
   }
 }
 
@@ -53,3 +74,4 @@ public class TestCase0002 extends BaseTest {
 // TODO restructure this
 // TODO restructure EmailAssertions
 // TODO Prepare TC1 with adding an email to subs!
+// TODO constants
