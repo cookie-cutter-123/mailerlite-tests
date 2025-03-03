@@ -6,9 +6,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
 public class UnsubscribePage {
+  private static final Logger logger = LoggerFactory.getLogger(UnsubscribePage.class);
 
   private final WebDriver driver;
   private final WebDriverWait wait;
@@ -32,7 +35,7 @@ public class UnsubscribePage {
     if (isElementPresent(By.id("optout_link"))) {
       wait.until(ExpectedConditions.elementToBeClickable(By.id("optout_link"))).click();
     } else {
-      System.out.println("No 'Yes' button found. Proceeding to the next step.");
+      logger.debug("No 'Yes' button found. Proceeding to the next step.");
     }
     return this;
   }
