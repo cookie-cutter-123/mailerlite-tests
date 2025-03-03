@@ -20,7 +20,8 @@ public class TestCase0002 extends BaseTest {
   public void testUnsubscribeFlow() throws Exception {
     // Fetch the latest email and extract the unsubscribe link
     String emailBody =
-        EmailAssertions.getEmailBody(TEXT_SENDER_LASTNAME, TEXT_CAMPAIGN_SUBJECT, 60);
+        EmailAssertions.getEmailBody(
+            TEXT_SENDER_LASTNAME, TEXT_CAMPAIGN_SUBJECT, EMAIL_WAIT_TIMEOUT);
     String unsubscribeLink = EmailUtils.extractUrlFromText(emailBody);
 
     // Open the unsubscribe link
@@ -49,7 +50,7 @@ public class TestCase0002 extends BaseTest {
 
     // Check if email exists, if not, add it
     if (!subscribersPage.isEmailPresent(SUBSCRIBER_EMAIL)) {
-      logger.info("Subscriber email not present. Adding subscriber.");
+      logger.info(MSG_SUBSCRIBER_NOT_PRESENT);
       subscribersPage
           .clickAddSubscribersButton()
           .clickAddSingleSubscriber()
@@ -57,7 +58,7 @@ public class TestCase0002 extends BaseTest {
           .selectGroupSubs()
           .clickSaveButton();
     } else {
-      logger.info("Subscriber email found.");
+      logger.info(MSG_SUBSCRIBER_FOUND);
     }
 
     // Verify email appears in Unsubscribed list with correct reason
@@ -66,11 +67,11 @@ public class TestCase0002 extends BaseTest {
         .clickDropdownButton()
         .selectUnsubscribedOption()
         .assertEmailPresent(SUBSCRIBER_EMAIL)
-        .assertUnsubscribeReason(SUBSCRIBER_EMAIL, "I no longer want to receive these emails");
+        .assertUnsubscribeReason(SUBSCRIBER_EMAIL, UNSUBSCRIBE_REASON);
 
     // Re-subscribe if necessary
     if (subscribersPage.isUnsubscribed(SUBSCRIBER_EMAIL)) {
-      logger.info("Subscriber is unsubscribed. Re-subscribing...");
+      logger.info(MSG_SUBSCRIBER_RESUBSCRIBING);
       subscribersPage
           .openSubscribersPage()
           .clickDropdownButton()
@@ -80,7 +81,7 @@ public class TestCase0002 extends BaseTest {
           .clickSubscribe()
           .clickConfirmActionButton();
     } else {
-      logger.info("Subscriber is already active.");
+      logger.info(MSG_SUBSCRIBER_ALREADY_ACTIVE);
     }
   }
 }

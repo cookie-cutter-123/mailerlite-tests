@@ -122,4 +122,12 @@ public class Constants {
   public static final String ASSERT_NEWSLETTER_CONTENT_NOT_FOUND =
       "Expected newsletter content not found on the webpage!";
   public static final String SUBSCRIBER_EMAIL = "test1@team210398.testinator.com";
+  public static final int EMAIL_WAIT_TIMEOUT = 60;
+  public static final String UNSUBSCRIBE_REASON = "I no longer want to receive these emails";
+  public static final String MSG_SUBSCRIBER_NOT_PRESENT =
+      "Subscriber email not present. Adding subscriber.";
+  public static final String MSG_SUBSCRIBER_FOUND = "Subscriber email found.";
+  public static final String MSG_SUBSCRIBER_RESUBSCRIBING =
+      "Subscriber is unsubscribed. Re-subscribing...";
+  public static final String MSG_SUBSCRIBER_ALREADY_ACTIVE = "Subscriber is already active.";
 }
