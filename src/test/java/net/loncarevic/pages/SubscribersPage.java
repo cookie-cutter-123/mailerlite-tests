@@ -1,5 +1,6 @@
 package net.loncarevic.pages;
 
+import static net.loncarevic.utils.Constants.SUBSCRIBERS_URL;
 import static net.loncarevic.utils.LocatorUtils.byDataTestId;
 
 import org.openqa.selenium.*;
@@ -11,8 +12,6 @@ public class SubscribersPage {
 
   private final WebDriver driver;
   private final WebDriverWait wait;
-  private static final String SUBSCRIBERS_URL = "https://dashboard.mailerlite.com/subscribers";
-  private static final String DROPDOWN_BUTTON = "dropdown-button";
 
   public SubscribersPage(WebDriver driver, WebDriverWait wait) {
     this.driver = driver;
@@ -109,48 +108,6 @@ public class SubscribersPage {
     return this;
   }
 
-  public SubscribersPage selectSubscriberCheckbox(String email) {
-    WebElement checkbox =
-        wait.until(
-            ExpectedConditions.elementToBeClickable(
-                By.xpath(
-                    "//tr[td//a[contains(text(), '" + email + "')]]//input[@type='checkbox']")));
-
-    if (!checkbox.isSelected()) {
-      checkbox.click();
-    }
-    return this;
-  }
-
-  public SubscribersPage clickActionsButton() {
-    WebElement actionsButton =
-        wait.until(ExpectedConditions.elementToBeClickable(byDataTestId("actions-button")));
-    actionsButton.click();
-    return this;
-  }
-
-  public SubscribersPage clickAddSubscriberToGroupDropdownItem() {
-    WebElement actionsButton =
-        wait.until(ExpectedConditions.elementToBeClickable(byDataTestId("add-to-group-action")));
-    actionsButton.click();
-    return this;
-  }
-
-  public SubscribersPage selectSubsCheckbox() {
-    WebElement subsCheckbox =
-        wait.until(
-            ExpectedConditions.elementToBeClickable(
-                By.cssSelector("input[id^='group-checkbox'][value='1']")));
-    if (!subsCheckbox.isSelected()) {
-      subsCheckbox.click();
-    }
-
-    // Click away
-    Actions actions = new Actions(driver);
-    actions.moveByOffset(10, 10).click().perform();
-    return this;
-  }
-
   public SubscribersPage clickSaveButton() {
     WebElement saveButton =
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.bg-green-500")));
@@ -241,20 +198,6 @@ public class SubscribersPage {
     actions.moveByOffset(10, 10).click().perform();
     Thread.sleep(3000);
 
-    return this;
-  }
-
-  public SubscribersPage clickAddSubscribersButton1() {
-    WebElement addSubscribersButton =
-        wait.until(
-            ExpectedConditions.presenceOfElementLocated(
-                By.xpath("//a[contains(@href, '/subscribers/create')]")));
-
-    // Scroll into view before clicking
-    ((JavascriptExecutor) driver)
-        .executeScript("arguments[0].scrollIntoView(true);", addSubscribersButton);
-
-    wait.until(ExpectedConditions.elementToBeClickable(addSubscribersButton)).click();
     return this;
   }
 }

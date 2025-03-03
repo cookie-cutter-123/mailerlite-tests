@@ -130,4 +130,5 @@ public class Constants {
   public static final String MSG_SUBSCRIBER_RESUBSCRIBING =
       "Subscriber is unsubscribed. Re-subscribing...";
   public static final String MSG_SUBSCRIBER_ALREADY_ACTIVE = "Subscriber is already active.";
+  public static final String SUBSCRIBERS_URL = "https://dashboard.mailerlite.com/subscribers";
 }
