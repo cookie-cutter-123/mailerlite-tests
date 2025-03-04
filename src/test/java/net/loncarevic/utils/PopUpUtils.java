@@ -30,15 +30,14 @@ public class PopUpUtils {
     } catch (TimeoutException e) {
       // If the pop-up is not found, log debug info and continue
       logger.debug(TEXT_NO_COOKIE_POPUP);
-      // If the cookie banner is still present, remove it using JavaScript.
-      try {
-        WebElement cookieBanner = driver.findElement(By.id("CookieBannerNotice"));
-        ((JavascriptExecutor) driver)
-            .executeScript("arguments[0].style.display='none';", cookieBanner);
-        logger.debug("CookieBannerNotice was hidden via JavaScript.");
-      } catch (Exception ex) {
-        logger.debug("Cookie banner not present or could not be removed via JavaScript.");
-      }
+    }
+    // Force removal of cookie banner if still present
+    try {
+      WebElement cookieBanner = driver.findElement(By.id("CookieBannerNotice"));
+      ((JavascriptExecutor) driver).executeScript("arguments[0].remove();", cookieBanner);
+      logger.debug("CookieBannerNotice removed via JavaScript.");
+    } catch (Exception ex) {
+      logger.debug("Cookie banner not present or already removed.");
     }
   }
 
