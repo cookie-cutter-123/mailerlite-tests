@@ -57,6 +57,15 @@ public class PopUpUtils {
         logger.debug("No thanks button click intercepted, dismissing cookie popup first");
         dismissCookiePopupIfPresent(driver, wait);
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("CookieBannerNotice")));
+        // If still intercepted, forcibly remove any overlay with fixed z-100
+        try {
+          for (WebElement overlay : driver.findElements(By.cssSelector("div.fixed.z-100"))) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].remove();", overlay);
+            logger.debug("Overlay removed via JavaScript.");
+          }
+        } catch (Exception ex) {
+          logger.debug("Overlay not found or could not be removed via JavaScript.");
+        }
         noThanksButton.click();
       }
       wait.until(ExpectedConditions.invisibilityOf(popupModal));
