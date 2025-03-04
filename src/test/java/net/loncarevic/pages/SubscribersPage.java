@@ -251,6 +251,21 @@ public class SubscribersPage {
    * @return The current instance of SubscribersPage.
    */
   public SubscribersPage clickAddSingleSubscriber() {
+    // Force removal of any modal overlay that may block the click
+    try {
+      for (WebElement overlay : driver.findElements(By.cssSelector("div.fixed.z-100"))) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].remove();", overlay);
+      }
+    } catch (Exception e) {
+      // Do nothing if removal fails
+    }
+    // Additionally, force removal of the cookie banner overlay if present
+    try {
+      WebElement cookieBanner = driver.findElement(By.id("CookieBannerNotice"));
+      ((JavascriptExecutor) driver).executeScript("arguments[0].remove();", cookieBanner);
+    } catch (Exception e) {
+      // Do nothing if not present
+    }
     WebElement addSingleSubscriberLink =
         wait.until(
             ExpectedConditions.elementToBeClickable(
