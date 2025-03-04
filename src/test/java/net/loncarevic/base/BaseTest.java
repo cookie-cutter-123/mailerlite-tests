@@ -3,6 +3,7 @@ package net.loncarevic.base;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.UUID;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -24,9 +25,7 @@ public class BaseTest {
       // Create a unique temporary directory to prevent session conflicts in CI
       Path tempDir = Files.createTempDirectory("chrome-user-data");
       options.addArguments("--user-data-dir=" + tempDir.toAbsolutePath());
-
-      //      // Run headless in CI to avoid UI dependency
-      //      options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
+      options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
     }
 
     driver = new ChromeDriver(options);
