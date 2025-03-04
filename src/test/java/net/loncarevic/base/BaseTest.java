@@ -25,8 +25,8 @@ public class BaseTest {
       Path tempDir = Files.createTempDirectory("chrome-user-data");
       options.addArguments("--user-data-dir=" + tempDir.toAbsolutePath());
 
-//      // Run headless in CI to avoid UI dependency
-//      options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
+      //      // Run headless in CI to avoid UI dependency
+      //      options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
     }
 
     driver = new ChromeDriver(options);
